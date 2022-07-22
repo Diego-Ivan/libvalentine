@@ -1,0 +1,11 @@
+[default]
+name=Default
+runtime=podman:fd0ec422be2a6cc2ab7e532b4fdfaa21a8e08a85fda7442595dc4c89761d4be7
+toolchain=default
+config-opts=
+run-opts=
+prefix=/var/home/diegoivan/.var/app/org.gnome.Builder/cache/gnome-builder/install/libvalentine/podman-fd0ec422be2a6cc2ab7e532b4fdfaa21a8e08a85fda7442595dc4c89761d4be7
+app-id=
+postbuild=
+prebuild=
+default=true
