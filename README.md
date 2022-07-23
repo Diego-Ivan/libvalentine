@@ -43,7 +43,7 @@ Support for property types:
 - [ ] UChars
 - [ ] Longs
 - [ ] DateTimes
-- [ ] Files
+- [x] Files
 - [x] Uint
 - [ ] Floats
 - [ ] Doubles

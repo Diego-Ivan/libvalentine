@@ -1,6 +1,7 @@
 valentine_tests = [
   'custom_types',
   'flags',
+  'file',
 ]
 
 foreach name : valentine_tests

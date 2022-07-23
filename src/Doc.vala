@@ -176,6 +176,18 @@ namespace Valentine {
                         return true;
                     }
 
+                    if (val.holds (typeof(File))) {
+                        var file = (File) val;
+                        if (file != null) {
+                            result = file.get_path ();
+                        }
+                        else {
+                            result = "(null)";
+                        }
+
+                        return true;
+                    }
+
                     foreach (CustomType t in custom_types) {
                         if (val.holds (t.type)) {
                             result = t.func (val);
