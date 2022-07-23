@@ -77,11 +77,29 @@ namespace Valentine {
                     result = ((int) val).to_string ();
                     return true;
 
+                case Type.UINT:
+                    result = ((uint) val).to_string ();
+                    return true;
+
                 case Type.BOOLEAN:
                     result = ((bool) val).to_string ();
                     return true;
 
                 default:
+                    // Check if the type holds flags
+                    if (val.type ().is_flags ()) {
+                        uint flags_value = val.get_flags ();
+                        result = FlagsClass.to_string (val.type (), flags_value);
+                        return true;
+                    }
+
+                    // Check if the types holds an enum
+                    if (val.type ().is_enum ()) {
+                        int enum_value = val.get_enum ();
+                        result = EnumClass.to_string (val.type (), enum_value);
+                        return true;
+                    }
+
                     result = "";
                     return false;
             }

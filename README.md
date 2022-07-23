@@ -44,12 +44,12 @@ Support for property types:
 - [ ] Longs
 - [ ] DateTimes
 - [ ] Files
-- [ ] Uint
+- [x] Uint
 - [ ] Floats
 - [ ] Doubles
 - [ ] Variants
-- [ ] Flags
-- [ ] Enums
+- [x] Flags
+- [x] Enums
 - [ ] Possibility to add user defined functions to parse other types (such as custom classes)
 
 Other features:
