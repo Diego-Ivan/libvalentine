@@ -11,6 +11,7 @@ public class MyObject : Object {
 public static int main (string[] args) {
     Test.init (ref args);
     Test.add_func ("/structs", custom_type_func);
+    Test.add_func ("/structs-null", custom_type_and_null_func);
 
     return Test.run ();
 }
@@ -21,7 +22,7 @@ public void custom_type_func () {
         { "George", 20 },
         { "Lucas", 29 },
         { "Daniela", 18 },
-        { "Luna", 25 }
+        { "Luna", 25 },
     };
 
     MyObject[] objects = {};
@@ -31,6 +32,30 @@ public void custom_type_func () {
             person = person
         };
     }
+
+    var doc = new Valentine.Doc ();
+    doc.add_custom_func_for_type (typeof(Person), conversion_func);
+
+    stdout.printf (doc.build_from_array ((Object[]) objects));
+}
+
+public void custom_type_and_null_func () {
+    Person[] people = {
+        { "Diego", 17 },
+        { "George", 20 },
+        { "Lucas", 29 },
+        { "Daniela", 18 },
+        { "Luna", 25 },
+    };
+
+    MyObject[] objects = {};
+
+    foreach (var person in people) {
+        objects += new MyObject () {
+            person = person
+        };
+    }
+    objects += new MyObject ();
 
     var doc = new Valentine.Doc ();
     doc.add_custom_func_for_type (typeof(Person), conversion_func);
