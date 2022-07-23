@@ -157,8 +157,32 @@ namespace Valentine {
                     result = ((uint) val).to_string ();
                     return true;
 
+                case Type.FLOAT:
+                    result = ((float) val).to_string ();
+                    return true;
+
+                case Type.DOUBLE:
+                    result = ((double) val).to_string ();
+                    return true;
+
+                case Type.LONG:
+                    result = ((long) val).to_string ();
+                    return true;
+
+                case Type.ULONG:
+                    result = ((ulong) val).to_string ();
+                    return true;
+
                 case Type.BOOLEAN:
                     result = ((bool) val).to_string ();
+                    return true;
+
+                case Type.CHAR:
+                    result = ((char) val).to_string ();
+                    return true;
+
+                case Type.UCHAR:
+                    result = ((uchar) val).to_string ();
                     return true;
 
                 case Type.VARIANT:

@@ -38,15 +38,15 @@ Support for property types:
 - [x] Integers
 - [x] Booleans
 - [x] Strings
-- [ ] Chars
+- [x] Chars
 - [ ] Objects (Maybe also an option to not parse objects?)
-- [ ] UChars
-- [ ] Longs
+- [x] UChars
+- [x] Longs
 - [X] DateTimes
 - [x] Files
 - [x] Uint
-- [ ] Floats
-- [ ] Doubles
+- [x] Floats
+- [x] Doubles
 - [X] Variants
 - [x] Flags
 - [x] Enums

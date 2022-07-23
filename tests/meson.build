@@ -4,6 +4,7 @@ valentine_tests = [
   'file',
   'variant',
   'datetime',
+  'basic_types',
 ]
 
 foreach name : valentine_tests
