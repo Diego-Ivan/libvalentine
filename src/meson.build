@@ -6,10 +6,8 @@ conf.set('PROJECT_VERSION', '0.0.1')
 conf.set('API_VERSION', API_VERSION)
 
 sources = files([
-  'library.vala',
   'Doc.vala',
-  'Row.vala',
-  'Column.vala',
+  'enums.vala',
   ])
 
 liblibvalentine = library('libvalentine-' + API_VERSION,
@@ -28,6 +26,12 @@ liblibvalentine = library('libvalentine-' + API_VERSION,
     vapidir,
     g_ir_compiler.found()
   ]
+)
+
+valentine_dep = declare_dependency(
+  link_with: liblibvalentine,
+  dependencies: dependencies,
+  include_directories: [include_directories('.')],
 )
 
 if g_ir_compiler.found()

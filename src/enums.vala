@@ -1,4 +1,4 @@
-/* Column.vala
+/* enums.vala
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
@@ -19,18 +19,8 @@
  */
 
 namespace Valentine {
-    public class Column : Object {
-        public string title { get; set; }
-        private Row[] rows = {};
-
-        internal bool write_at_row (int index, string content) {
-            if (index >= rows.length) {
-                warning ("Row %i does not exist in the context of column %s", index, title);
-                return false;
-            }
-
-            rows[index].content = content;
-            return false;
-        }
+    public enum WriteMode {
+        ALL_QUOTES,
+        ONLY_REQUIRED_QUOTES
     }
 }
