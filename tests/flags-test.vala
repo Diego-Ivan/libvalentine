@@ -10,6 +10,13 @@ public enum MyEnum {
     SOMEWHERE
 }
 
+public static int main (string[] args) {
+    Test.init (ref args);
+    Test.add_func ("/flags-test", flag_test_func);
+
+    return Test.run ();
+}
+
 public void flag_test_func () {
     ExampleClass[] objects = {
         new ExampleClass () { my_flags = PARAM_1 | PARAM_2, my_uint = 2, my_enum = SOMETHING },
