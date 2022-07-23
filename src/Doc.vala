@@ -6,11 +6,20 @@
  */
 
 namespace Valentine {
+    public delegate string UserConversionFunc (Value val);
+
     public sealed class Doc : Object {
         private struct Property {
             public string name;
             public Type type;
         }
+
+        private struct CustomType {
+            public Type type;
+            public unowned UserConversionFunc func;
+        }
+
+        private CustomType[] custom_types = {};
 
         public Doc () {
         }
@@ -67,7 +76,15 @@ namespace Valentine {
             return format;
         }
 
+        public void add_custom_func_for_type (Type t, UserConversionFunc f) {
+            custom_types += CustomType () {
+                type = t,
+                func = f
+            };
+        }
+
         private bool value_to_string (Value val, out string result) {
+            message ("Reached value to string");
             switch (val.type ()) {
                 case Type.STRING:
                     result = (string) val;
@@ -98,6 +115,13 @@ namespace Valentine {
                         int enum_value = val.get_enum ();
                         result = EnumClass.to_string (val.type (), enum_value);
                         return true;
+                    }
+
+                    foreach (CustomType t in custom_types) {
+                        if (val.type () == t.type) {
+                            result = t.func (val);
+                            return true;
+                        }
                     }
 
                     result = "";
