@@ -50,7 +50,7 @@ Support for property types:
 - [ ] Variants
 - [x] Flags
 - [x] Enums
-- [ ] Possibility to add user defined functions to parse other types (such as custom classes)
+- [x] Possibility to add user defined functions to parse other types (such as custom classes)
 
 Other features:
 

@@ -1,4 +1,4 @@
-/* enums.vala
+/* structs.vala
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
@@ -19,20 +19,13 @@
  */
 
 namespace Valentine {
-    /**
-     * Whether {@link Valentine.Doc} should quote all elements of the CSV file, or if it should only write
-     * quotes when it is strictly necessary.
-     */
-    public enum WriteMode {
-        /**
-         * Mode that will quote all elements of the CSV file
-         */
-        ALL_QUOTED,
-        /**
-         * Mode that will only quote strictly necessary elements
-         *
-         * Including strings that contain the separator
-         */
-        ONLY_REQUIRED_QUOTES
+    private struct Property {
+        public string name;
+        public Type type;
+    }
+
+    private struct CustomType {
+        public Type type;
+        public unowned UserConversionFunc func;
     }
 }

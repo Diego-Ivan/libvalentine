@@ -1,4 +1,4 @@
-/* enums.vala
+/* delegates.vala
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
@@ -20,19 +20,13 @@
 
 namespace Valentine {
     /**
-     * Whether {@link Valentine.Doc} should quote all elements of the CSV file, or if it should only write
-     * quotes when it is strictly necessary.
+     * UserConversionFunc allows to parse types that cannot be automatically parsed by Valentine.
+     *
+     * The function gives a {@link GLib.Value} and expects that a string is returned. This strings must be
+     * given by the developer at the end of the processing process
+     *
+     * @param val a {@link GLib.Value} that holds the custom type that should be processed into a string
+     * @return The string that will be written into the CSV file
      */
-    public enum WriteMode {
-        /**
-         * Mode that will quote all elements of the CSV file
-         */
-        ALL_QUOTED,
-        /**
-         * Mode that will only quote strictly necessary elements
-         *
-         * Including strings that contain the separator
-         */
-        ONLY_REQUIRED_QUOTES
-    }
+    public delegate string UserConversionFunc (Value val);
 }

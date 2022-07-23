@@ -2,23 +2,34 @@
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
+ * This file is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This file is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
 namespace Valentine {
-    public delegate string UserConversionFunc (Value val);
-
+    /**
+     * A CSV writer based on {@link GLib.Object} information
+     *
+     * This class that will generate the CSV file based on the information provided
+     * by the {@link GLib.ParamSpec} given by the objects that you give to #this
+     *
+     * Currently, the parsing methods are can exclusively work using Object arrays, which is quite
+     * incovenient as it is prone to errors. It is very likely that in the future, this structure
+     * will implement a {@link GLib.ListModel} to store Objects.
+     */
     public sealed class Doc : Object {
-        private struct Property {
-            public string name;
-            public Type type;
-        }
-
-        private struct CustomType {
-            public Type type;
-            public unowned UserConversionFunc func;
-        }
-
         private CustomType[] custom_types = {};
 
         public Doc () {
@@ -76,6 +87,55 @@ namespace Valentine {
             return format;
         }
 
+        /**
+         * Add a parser for a type that is not processed by default.
+         *
+         * This method allows users to add a function that parses types that can't be parsed by default, such
+         * as structs, classes or other objects.
+         *
+         * ''Example''<<BR>>
+         * {{{
+         *  public class MyObject : Object {
+         *      public Person person { get; set; }
+         *      public bool hired { get; set; default = true; }
+         *  }
+         *
+         *  // Custom Type that can't be parsed by default
+         *  public struct Person {
+         *      public string name;
+         *      public int age;
+         *  }
+         * public static int main () {
+         *      Person[] people = {
+         *          { "Diego", 17 },
+         *          { "George", 20 },
+         *          { "Lucas", 29 },
+         *          { "Daniela", 18 },
+         *          { "Luna", 25 }
+         *      };
+         *
+         *      MyObject[] objects = {};
+         *      foreach (var person in people) {
+         *          objects += new MyObject () {
+         *              person = person
+         *          };
+         *      }
+         *
+         *      var doc = new Valentine.Doc ();
+         *      doc.add_custom_func_for_type (typeof(Person), (val) => {
+         *        var person = (Person) val;
+         *        return "%s:%i".printf (person.name, person.age);
+         *      });
+         *
+         *      stdout.printf (doc.build_from_array ((Object[]) objects));
+         *      return 0;
+         *
+         * }
+         * }}}
+         *
+         * @param t The object {@link GLib.Type} that will be given a custom parser
+         * @param f The {@link Valentine.UserConversionFunc} that will parse the value given
+         */
         public void add_custom_func_for_type (Type t, UserConversionFunc f) {
             custom_types += CustomType () {
                 type = t,
@@ -84,7 +144,6 @@ namespace Valentine {
         }
 
         private bool value_to_string (Value val, out string result) {
-            message ("Reached value to string");
             switch (val.type ()) {
                 case Type.STRING:
                     result = (string) val;
@@ -118,7 +177,7 @@ namespace Valentine {
                     }
 
                     foreach (CustomType t in custom_types) {
-                        if (val.type () == t.type) {
+                        if (val.holds (t.type)) {
                             result = t.func (val);
                             return true;
                         }

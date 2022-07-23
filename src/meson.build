@@ -8,6 +8,8 @@ conf.set('API_VERSION', API_VERSION)
 sources = files([
   'Doc.vala',
   'enums.vala',
+  'delegates.vala',
+  'structs.vala',
   ])
 
 liblibvalentine = library('libvalentine-' + API_VERSION,
