@@ -31,7 +31,7 @@ var doc = new Valentine.Doc ();
 string output = doc.build_from_array ({new Object (), new Object ()});
 ```
 
-## Feature 
+## Features
 
 Support for property types:
 
