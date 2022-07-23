@@ -47,7 +47,7 @@ Support for property types:
 - [x] Uint
 - [ ] Floats
 - [ ] Doubles
-- [ ] Variants
+- [X] Variants
 - [x] Flags
 - [x] Enums
 - [x] Possibility to add user defined functions to parse other types (such as custom classes)

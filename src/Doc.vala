@@ -93,7 +93,7 @@ namespace Valentine {
          * This method allows users to add a function that parses types that can't be parsed by default, such
          * as structs, classes or other objects.
          *
-         * ''Example''<<BR>>
+         * ''Example''
          * {{{
          *  public class MyObject : Object {
          *      public Person person { get; set; }
@@ -159,6 +159,16 @@ namespace Valentine {
 
                 case Type.BOOLEAN:
                     result = ((bool) val).to_string ();
+                    return true;
+
+                case Type.VARIANT:
+                    Variant variant = (Variant) val;
+                    if (variant == null) {
+                        result = "(null)";
+                    }
+                    else {
+                        result = variant.print (false);
+                    }
                     return true;
 
                 default:
