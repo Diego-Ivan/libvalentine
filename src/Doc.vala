@@ -198,6 +198,18 @@ namespace Valentine {
                         return true;
                     }
 
+                    if (val.holds (typeof(DateTime))) {
+                        var date_time = (DateTime) val;
+                        if (date_time == null) {
+                            result = "(null)";
+                        }
+                        else {
+                            result = date_time.format ("%c");
+                        }
+
+                        return true;
+                    }
+
                     foreach (CustomType t in custom_types) {
                         if (val.holds (t.type)) {
                             result = t.func (val);

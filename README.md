@@ -42,7 +42,7 @@ Support for property types:
 - [ ] Objects (Maybe also an option to not parse objects?)
 - [ ] UChars
 - [ ] Longs
-- [ ] DateTimes
+- [X] DateTimes
 - [x] Files
 - [x] Uint
 - [ ] Floats
