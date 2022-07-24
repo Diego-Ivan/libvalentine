@@ -23,6 +23,7 @@ namespace Valentine {
      * Whether {@link Valentine.Doc} should quote all elements of the CSV file, or if it should only write
      * quotes when it is strictly necessary.
      */
+    [Version(since="0.1")]
     public enum WriteMode {
         /**
          * Mode that will quote all elements of the CSV file
@@ -33,6 +34,58 @@ namespace Valentine {
          *
          * Including strings that contain the separator
          */
-        ONLY_REQUIRED_QUOTES
+        ONLY_REQUIRED_QUOTES;
+
+        public string parse_string (string str, string separator) {
+            switch (this) {
+                case ONLY_REQUIRED_QUOTES:
+                    string s = str.replace ("\"", "\"\"");
+                    if (s.contains (separator)) {
+                        return "\"%s\"".printf (s);
+                    }
+                    return s;
+
+                case ALL_QUOTED:
+                    string s = str.replace ("\"", "\"\"");
+                    return "\"%s\"".printf (s);
+
+                default:
+                    critical ("WriteMode defaulted, returning empty string");
+                    return "";
+            }
+        }
+    }
+
+    [Version(since="0.1")]
+    public enum SeparatorMode {
+        PREFER_LOCALE,
+        USE_COMMAS,
+        USE_DOTS;
+
+        internal string get_separator () {
+            switch (this) {
+                // case PREFER_LOCALE:
+                //     return _(",");
+
+                case USE_DOTS:
+                    return ".";
+
+                case USE_COMMAS:
+                default:
+                    // In case of a default, we will default to a comma
+                    return ",";
+            }
+        }
+    }
+
+    /**
+     * Thrown by {@link Valentine.ObjectWriter}
+     */
+    [Version(since="0.1")]
+    public errordomain ObjectWriterError {
+        /**
+         * Indicates that the {@link GLib.Type} given to {@link Valentine.ObjectWriter} is not an Object
+         */
+        NOT_OBJECT
     }
 }

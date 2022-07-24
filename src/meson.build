@@ -6,9 +6,11 @@ conf.set('PROJECT_VERSION', '0.0.1')
 conf.set('API_VERSION', API_VERSION)
 
 sources = files([
+  'AbstractWriter.vala',
   'Doc.vala',
   'enums.vala',
   'delegates.vala',
+  'ObjectWriter.vala',
   'structs.vala',
   ])
 
