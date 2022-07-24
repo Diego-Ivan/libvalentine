@@ -24,11 +24,19 @@ name,something
 
 ## Usage
 
-Valentine provides a simple API that converts objects to an string. In the future, it will be possible to save it directly to a file. `Valentine.Doc` currently parses objects with a single `Object[]` argument
+Valentine provides a simple API that converts GLib.Objects into a CSV file.
 
 ```vala
-var doc = new Valentine.Doc ();
-string output = doc.build_from_array ({new Object (), new Object ()});
+var doc = new Valentine.Writer<Adw.Flap> ();
+doc.add_object (new Adw.Flap ());
+doc.add_object (new Adw.Flap ());
+
+stdout.printf (doc.to_string ());
+```
+
+It also provides an option to save the document directly to a file:
+```vala
+doc.save_to_file ("/var/home/user/Documents/my_file.csv");
 ```
 
 ## Features
