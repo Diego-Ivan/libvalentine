@@ -19,7 +19,7 @@
  */
 
 public abstract class Valentine.AbstractWriter : Object {
-    public virtual Valentine.WriteMode write_mode { get; set; }
+    public virtual Valentine.WriteMode write_mode { get; set; default = ALL_QUOTED; }
     public virtual Valentine.SeparatorMode separator_mode { get; set; }
 
     /**
