@@ -71,6 +71,9 @@ if get_option('enable_valadoc')
     install_dir: get_option('datadir') / 'devhelp' / 'books',
     command: [
       valadoc,
+      '--pkg=glib-2.0',
+      '--pkg=gobject-2.0',
+      '--pkg=gio-2.0',
       '-o', meson.current_build_dir() / 'Valentine-' + API_VERSION,
       '--doclet',
       'devhelp',
