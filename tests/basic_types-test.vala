@@ -24,6 +24,8 @@ public void null_test () {
 
     var doc = new Valentine.Doc ();
     stdout.printf (doc.build_from_array ((Object[]) objects));
+
+    var algo = new Valentine.ObjectWriter<BasicTypesClass> ();
 }
 
 public class BasicTypesClass : Object {

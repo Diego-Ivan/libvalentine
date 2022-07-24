@@ -29,6 +29,7 @@ namespace Valentine {
      * incovenient as it is prone to errors. It is very likely that in the future, this structure
      * will implement a {@link GLib.ListModel} to store Objects.
      */
+     [Version (deprecated=true)]
     public sealed class Doc : Object {
         private CustomType[] custom_types = {};
 

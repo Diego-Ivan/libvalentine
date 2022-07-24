@@ -5,6 +5,7 @@ valentine_tests = [
   'variant',
   'datetime',
   'basic_types',
+  'write_mode',
 ]
 
 foreach name : valentine_tests
