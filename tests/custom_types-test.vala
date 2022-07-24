@@ -25,18 +25,20 @@ public void custom_type_func () {
         { "Luna", 25 },
     };
 
-    MyObject[] objects = {};
+    try {
+        var writer = new Valentine.ObjectWriter<MyObject> ();
+        for (int i = 0; i < people.length; i++) {
+            writer.add_object (new MyObject () {
+                person = people[i]
+            });
+        }
 
-    foreach (var person in people) {
-        objects += new MyObject () {
-            person = person
-        };
+        writer.add_custom_parser_for_type (typeof(Person), conversion_func);
+        stdout.printf (writer.to_string ());
     }
-
-    var doc = new Valentine.Doc ();
-    doc.add_custom_func_for_type (typeof(Person), conversion_func);
-
-    stdout.printf (doc.build_from_array ((Object[]) objects));
+    catch (Error e) {
+        critical (e.message);
+    }
 }
 
 public void custom_type_and_null_func () {
@@ -48,19 +50,22 @@ public void custom_type_and_null_func () {
         { "Luna", 25 },
     };
 
-    MyObject[] objects = {};
+    try {
+        var writer = new Valentine.ObjectWriter<MyObject> ();
 
-    foreach (var person in people) {
-        objects += new MyObject () {
-            person = person
-        };
+        for (int i = 0; i < people.length; i++) {
+            writer.add_object (new MyObject () {
+                person = people[i]
+            });
+        }
+        writer.add_object (new MyObject ());
+
+        writer.add_custom_parser_for_type (typeof(Person), conversion_func);
+        stdout.printf (writer.to_string ());
     }
-    objects += new MyObject ();
-
-    var doc = new Valentine.Doc ();
-    doc.add_custom_func_for_type (typeof(Person), conversion_func);
-
-    stdout.printf (doc.build_from_array ((Object[]) objects));
+    catch (Error e) {
+        critical (e.message);
+    }
 }
 
 public string conversion_func (Value val) {

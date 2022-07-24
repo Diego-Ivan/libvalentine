@@ -12,8 +12,17 @@ public void file_test_func () {
         new FileObject ()
     };
 
-    var doc = new Valentine.Doc ();
-    stdout.printf (doc.build_from_array ((Object[]) objects));
+    try {
+        var writer = new Valentine.ObjectWriter<FileObject> ();
+        for (int i = 0; i < objects.length; i++) {
+            writer.add_object (objects[i]);
+        }
+
+        stdout.printf (writer.to_string ());
+    }
+    catch (Error e) {
+        critical (e.message);
+    }
 }
 
 public class FileObject : Object {

@@ -7,25 +7,32 @@ public static int main (string[] args) {
 }
 
 public void non_null_test () {
-    BasicTypesClass[] objects = {};
-    for (int i = 0; i < 10; i++) {
-        objects += new BasicTypesClass () { str = "string", ch = 'c', uc = 'u', integer = i, uinteger = i+3, longint = long.MAX, longuint = ulong.MAX, db = 1.2413424, fl = (float) 1.243 };
+    try {
+        var writer = new Valentine.ObjectWriter<BasicTypesClass> ();
+        for (int i = 0; i < 10; i++) {
+            writer.add_object (new BasicTypesClass () { str = "string", ch = 'c', uc = 'u', integer = i, uinteger = i+3, longint = long.MAX, longuint = ulong.MAX, db = 1.2413424, fl = (float) 1.243 });
+        }
+
+        stdout.printf (writer.to_string ());
+    }
+    catch (Error e) {
+        critical (e.message);
     }
 
-    var doc = new Valentine.Doc ();
-    stdout.printf (doc.build_from_array ((Object[]) objects));
 }
 
 public void null_test () {
-    BasicTypesClass[] objects = {};
-    for (int i = 0; i < 10; i++) {
-        objects += new BasicTypesClass ();
+    try {
+        var writer = new Valentine.ObjectWriter<BasicTypesClass> ();
+        for (int i = 0; i < 10; i++) {
+            writer.add_object (new BasicTypesClass ());
+        }
+
+        stdout.printf (writer.to_string ());
     }
-
-    var doc = new Valentine.Doc ();
-    stdout.printf (doc.build_from_array ((Object[]) objects));
-
-    var algo = new Valentine.ObjectWriter<BasicTypesClass> ();
+    catch (Error e) {
+        critical (e.message);
+    }
 }
 
 public class BasicTypesClass : Object {

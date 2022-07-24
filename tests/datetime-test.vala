@@ -16,8 +16,17 @@ public void date_time_func () {
         new DateObject ("Octavio") { date = new DateTime.now_local () },
     };
 
-    var doc = new Valentine.Doc ();
-    stdout.printf (doc.build_from_array ((Object[]) objects));
+    try {
+        var writer = new Valentine.ObjectWriter<DateObject> ();
+        for (int i = 0; i < objects.length; i++) {
+            writer.add_object (objects[i]);
+        }
+
+        stdout.printf (writer.to_string ());
+    }
+    catch (Error e) {
+        critical (e.message);
+    }
 }
 
 public void date_time_null_func () {
@@ -31,8 +40,17 @@ public void date_time_null_func () {
         new DateObject ("Octavio") { date = new DateTime.now_local () },
     };
 
-    var doc = new Valentine.Doc ();
-    stdout.printf (doc.build_from_array ((Object[]) objects));
+    try {
+        var writer = new Valentine.ObjectWriter<DateObject> ();
+        for (int i = 0; i < objects.length; i++) {
+            writer.add_object (objects[i]);
+        }
+
+        stdout.printf (writer.to_string ());
+    }
+    catch (Error e) {
+        critical (e.message);
+    }
 }
 
 public class DateObject : Object {
