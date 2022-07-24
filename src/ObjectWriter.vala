@@ -28,8 +28,11 @@
 [Version (since="0.1")]
 public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
     private Valentine.Property[] readable_properties = {};
-    private Valentine.CustomType[] custom_types = {};
+    private Valentine.ParsableType[] custom_types = {};
     private List<T> object_list = new List<T> ();
+
+    private Gee.LinkedList<ParsableType?> parsable_types = new Gee.LinkedList<ParsableType?> ();
+    private Gee.LinkedList<Property?> parsable_properties = new Gee.LinkedList<Property?> ();
 
     /**
      * Constructs a new {@link Valentine.ObjectWriter} with the Type given
@@ -54,6 +57,22 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
         }
     }
 
+    construct {
+        parsable_types.add ( {typeof (string), Parser.value_string_to_string} );
+        parsable_types.add ( {typeof (int), Parser.value_int_to_string} );
+        parsable_types.add ( {typeof (uint), Parser.value_uint_to_string} );
+        parsable_types.add ( {typeof (float), Parser.value_float_to_string} );
+        parsable_types.add ( {typeof (double), Parser.value_double_to_string} );
+        parsable_types.add ( {typeof (long), Parser.value_long_to_string} );
+        parsable_types.add ( {typeof (ulong), Parser.value_ulong_to_string} );
+        parsable_types.add ( {typeof (bool), Parser.value_boolean_to_string} );
+        parsable_types.add ( {typeof (char), Parser.value_char_to_string} );
+        parsable_types.add ( {typeof (uchar), Parser.value_uchar_to_string} );
+        parsable_types.add ( {typeof (Variant), Parser.value_variant_to_string} );
+        parsable_types.add ( {typeof (File), Parser.value_file_to_string} );
+        parsable_types.add ( {typeof (DateTime), Parser.value_datetime_to_string} );
+    }
+
     /**
      * Adds a new Object to #this
      *
@@ -66,40 +85,99 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
 
     [Version (since="0.1")]
     public override string to_string () {
+        // First, we will discard properties that are not parsable
+        foreach (Property property in readable_properties) {
+            bool found = false;
+
+            parsable_types.foreach ((type) => {
+                if (property.type == type.type) {
+                    found = true;
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (found || property.type.is_flags () || property.type.is_enum ()) {
+                parsable_properties.add (property);
+                continue;
+            }
+            debug ("A parser for property type %s was not found", property.type.name ());
+        }
+
         string separator = separator_mode.get_separator ();
         string output = "";
 
         // First, the column titles will be written with the property names that were obtained
-        for (int i = 0; i < readable_properties.length; i++) {
+        for (int i = 0; i < parsable_properties.size; i++) {
             // Here we check if it is the last one of the array to stop writing separators, and instead
             // use a line break
-            if (i == readable_properties.length - 1) {
-                output += "%s\n".printf (readable_properties[i].name);
+            if (i == parsable_properties.size - 1) {
+                output += "%s\n".printf (parsable_properties.get (i).name);
                 continue;
             }
-            output += "%s%s".printf (readable_properties[i].name, separator);
+            output += "%s%s".printf (parsable_properties.get (i).name, separator);
         }
 
         object_list.foreach ((item) => {
             Object obj = (Object) item;
-            for (int i = 0; i < readable_properties.length; i++) {
-                Valentine.Property property = readable_properties[i];
+            for (int i = 0; i < parsable_properties.size; i++) {
+                Valentine.Property property = parsable_properties.get (i);
 
                 Value val = Value (property.type);
                 obj.get_property (property.name, ref val);
 
-                string str;
-                if (!value_to_string (val, out str)) {
-                    warning ("Property %s could not be parsed", property.name);
-                    continue;
+                string s = "";
+                bool found = false;
+                foreach (ParsableType type in parsable_types) {
+                    if (type.type == val.type ()) {
+                        s = type.func (val);
+                        found = true;
+
+                        string str = write_mode.parse_string (s, separator);
+                        if (i == parsable_properties.size - 1) {
+                            str += "\n";
+                        }
+                        else {
+                            str += "%s".printf (separator);
+                        }
+                        output += str;
+
+                        break;
+                    }
                 }
 
-                if (i == readable_properties.length - 1) {
-                    output += "\"%s\"\n".printf (str);
-                    continue;
-                }
+                if (!found) {
+                    if (val.type ().is_flags ()) {
+                        s = Parser.value_flags_to_string (val);
+                        string str = write_mode.parse_string (s, separator);
 
-                output += "\"%s\",".printf (str);
+                        if (i == parsable_properties.size - 1) {
+                            str += "\n";
+                        }
+                        else {
+                            str += "%s".printf (separator);
+                        }
+
+                        output += str;
+                        continue;
+                    }
+
+                    if (val.type ().is_enum ()) {
+                        s = Parser.value_enum_to_string (val);
+                        string str = write_mode.parse_string (s, separator);
+
+                        if (i == parsable_properties.size - 1) {
+                            str += "\n";
+                        }
+                        else {
+                            str += "%s".printf (separator);
+                        }
+
+                        output += str;
+                        continue;
+                    }
+                }
             }
         });
 
@@ -117,10 +195,7 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
      */
     [Version (since="0.1")]
     public void add_custom_parser_for_type (Type type, UserConversionFunc func) {
-        custom_types += Valentine.CustomType () {
-            type = type,
-            func = func
-        };
+        parsable_types.add ({type, func});
     }
 
     private bool value_to_string (Value val, out string result) {
@@ -214,7 +289,7 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
                     return true;
                 }
 
-                foreach (CustomType t in custom_types) {
+                foreach (ParsableType t in custom_types) {
                     if (val.holds (t.type)) {
                         result = t.func (val);
                         return true;
