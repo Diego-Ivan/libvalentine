@@ -82,7 +82,9 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
 
         object_list.foreach ((item) => {
             Object obj = (Object) item;
-            foreach (Valentine.Property property in readable_properties) {
+            for (int i = 0; i < readable_properties.length; i++) {
+                Valentine.Property property = readable_properties[i];
+
                 Value val = Value (property.type);
                 obj.get_property (property.name, ref val);
 
@@ -91,6 +93,13 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
                     warning ("Property %s could not be parsed", property.name);
                     continue;
                 }
+
+                if (i == readable_properties.length - 1) {
+                    output += "\"%s\"\n".printf (str);
+                    continue;
+                }
+
+                output += "\"%s\",".printf (str);
             }
         });
 
