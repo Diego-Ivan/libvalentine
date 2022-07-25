@@ -6,7 +6,8 @@ valentine_tests = [
   'datetime',
   'basic_types',
   'write_mode',
-  'adw_flap'
+  'adw_flap',
+  'performance',
 ]
 
 test_dependencies = [
