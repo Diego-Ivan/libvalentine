@@ -62,7 +62,7 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
     [Version (since="0.1")]
     public void add_object (T obj) {
         object_list.append (obj);
-    }
+   }
 
     [Version (since="0.1")]
     public override string to_string () {
@@ -90,7 +90,7 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
 
                 string str;
                 if (!value_to_string (val, out str)) {
-                    warning ("Property %s could not be parsed", property.name);
+                    // debug("Property %s could not be parsed", property.name);
                     continue;
                 }
 
