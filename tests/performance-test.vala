@@ -11,7 +11,8 @@ public void performance_func () {
         new PerformanceObject (1000),
         new PerformanceObject (2000),
         new PerformanceObject (3000),
-        // new PerformanceObject (5000),
+        new PerformanceObject (5000),
+        new PerformanceObject (10000),
     };
 
     Adw.init ();

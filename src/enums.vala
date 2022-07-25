@@ -36,7 +36,7 @@ namespace Valentine {
          */
         ONLY_REQUIRED_QUOTES;
 
-        public string parse_string (string str, string separator) {
+        public inline string parse_string (string str, string separator) {
             switch (this) {
                 case ONLY_REQUIRED_QUOTES:
                     string s = str.replace ("\"", "\"\"");
@@ -62,7 +62,7 @@ namespace Valentine {
         USE_COMMAS,
         USE_DOTS;
 
-        internal string get_separator () {
+        internal inline string get_separator () {
             switch (this) {
                 // case PREFER_LOCALE:
                 //     return _(",");
