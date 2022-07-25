@@ -19,7 +19,7 @@
  */
 
 namespace Valentine.Parser {
-    internal string value_string_to_string (Value val) {
+    internal inline string value_string_to_string (Value val) {
         string str = (string) val;
         if (str == null) {
             return "(null)";
@@ -28,43 +28,43 @@ namespace Valentine.Parser {
         return str;
     }
 
-    internal string value_int_to_string (Value val) {
+    internal inline string value_int_to_string (Value val) {
         return ((int) val).to_string ();
     }
 
-    internal string value_uint_to_string (Value val) {
+    internal inline string value_uint_to_string (Value val) {
         return ((uint) val).to_string ();
     }
 
-    internal string value_float_to_string (Value val) {
+    internal inline string value_float_to_string (Value val) {
         return ((float) val).to_string ();
     }
 
-    internal string value_double_to_string (Value val) {
+    internal inline string value_double_to_string (Value val) {
         return ((double) val).to_string ();
     }
 
-    internal string value_long_to_string (Value val) {
+    internal inline string value_long_to_string (Value val) {
         return ((long) val).to_string ();
     }
 
-    internal string value_ulong_to_string (Value val) {
+    internal inline string value_ulong_to_string (Value val) {
         return ((ulong) val).to_string ();
     }
 
-    internal string value_boolean_to_string (Value val) {
+    internal inline string value_boolean_to_string (Value val) {
         return ((bool) val).to_string ();
     }
 
-    internal string value_char_to_string (Value val) {
+    internal inline string value_char_to_string (Value val) {
         return ((char) val).to_string ();
     }
 
-    internal string value_uchar_to_string (Value val) {
+    internal inline string value_uchar_to_string (Value val) {
         return ((uchar) val).to_string ();
     }
 
-    internal string value_variant_to_string (Value val) {
+    internal inline string value_variant_to_string (Value val) {
         Variant variant = (Variant) val;
         if (variant == null) {
             return "(null)";
@@ -73,17 +73,17 @@ namespace Valentine.Parser {
         return variant.print (false);
     }
 
-    internal string value_flags_to_string (Value val) {
+    internal inline string value_flags_to_string (Value val) {
         uint flags_value = val.get_flags ();
         return FlagsClass.to_string (val.type (), flags_value);
     }
 
-    internal string value_enum_to_string (Value val) {
+    internal inline string value_enum_to_string (Value val) {
         int enum_value = val.get_enum ();
         return EnumClass.to_string (val.type (), enum_value);
     }
 
-    internal string value_datetime_to_string (Value val) {
+    internal inline string value_datetime_to_string (Value val) {
         DateTime dt = (DateTime) val;
         if (dt == null) {
             return "(null)";
@@ -92,7 +92,7 @@ namespace Valentine.Parser {
         return dt.format ("%c");
     }
 
-    internal string value_file_to_string (Value val) {
+    internal inline string value_file_to_string (Value val) {
         File file = (File) val;
         if (file == null) {
             return "(null)";
