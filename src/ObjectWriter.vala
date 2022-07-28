@@ -194,7 +194,7 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
      * @param func The function that processes the type
      */
     [Version (since="0.1")]
-    public void add_custom_parser_for_type (Type type, UserConversionFunc func) {
+    public void add_custom_parser_for_type (Type type, TypeConversionFunc func) {
         parsable_types.add ({type, func});
     }
 }

@@ -26,6 +26,6 @@ namespace Valentine {
 
     private struct ParsableType {
         public Type type;
-        public unowned UserConversionFunc func;
+        public unowned TypeConversionFunc func;
     }
 }

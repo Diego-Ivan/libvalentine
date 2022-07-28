@@ -29,5 +29,5 @@ namespace Valentine {
      * @return The string that will be written into the CSV file
      */
     [Version (since="0.1")]
-    public delegate string UserConversionFunc (Value val);
+    public delegate string TypeConversionFunc (Value val);
 }
