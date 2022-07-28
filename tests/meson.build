@@ -8,6 +8,7 @@ valentine_tests = [
   'write_mode',
   'adw_flap',
   'performance',
+  'string_array',
 ]
 
 test_dependencies = [

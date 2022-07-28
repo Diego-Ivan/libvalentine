@@ -28,7 +28,6 @@
 [Version (since="0.1")]
 public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
     private Valentine.Property[] readable_properties = {};
-    private Valentine.ParsableType[] custom_types = {};
     private List<T> object_list = new List<T> ();
 
     private Gee.LinkedList<ParsableType?> parsable_types = new Gee.LinkedList<ParsableType?> ();
@@ -68,6 +67,7 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
         parsable_types.add ( {typeof (bool), Parser.value_boolean_to_string} );
         parsable_types.add ( {typeof (char), Parser.value_char_to_string} );
         parsable_types.add ( {typeof (uchar), Parser.value_uchar_to_string} );
+        parsable_types.add ( {typeof (string[]), Parser.value_string_array_to_string} );
         parsable_types.add ( {typeof (Variant), Parser.value_variant_to_string} );
         parsable_types.add ( {typeof (File), Parser.value_file_to_string} );
         parsable_types.add ( {typeof (DateTime), Parser.value_datetime_to_string} );
@@ -196,108 +196,5 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
     [Version (since="0.1")]
     public void add_custom_parser_for_type (Type type, UserConversionFunc func) {
         parsable_types.add ({type, func});
-    }
-
-    private bool value_to_string (Value val, out string result) {
-        switch (val.type ()) {
-            case Type.STRING:
-                result = (string) val;
-                return true;
-
-            case Type.INT:
-                result = ((int) val).to_string ();
-                return true;
-
-            case Type.UINT:
-                result = ((uint) val).to_string ();
-                return true;
-
-            case Type.FLOAT:
-                result = ((float) val).to_string ();
-                return true;
-
-            case Type.DOUBLE:
-                result = ((double) val).to_string ();
-                return true;
-
-            case Type.LONG:
-                result = ((long) val).to_string ();
-                return true;
-
-            case Type.ULONG:
-                result = ((ulong) val).to_string ();
-                return true;
-
-            case Type.BOOLEAN:
-                result = ((bool) val).to_string ();
-                return true;
-
-            case Type.CHAR:
-                result = ((char) val).to_string ();
-                return true;
-
-            case Type.UCHAR:
-                result = ((uchar) val).to_string ();
-                return true;
-
-            case Type.VARIANT:
-                Variant variant = (Variant) val;
-                if (variant == null) {
-                    result = "(null)";
-                }
-                else {
-                    result = variant.print (false);
-                }
-                return true;
-
-            default:
-                // Check if the type holds flags
-                if (val.type ().is_flags ()) {
-                    uint flags_value = val.get_flags ();
-                    result = FlagsClass.to_string (val.type (), flags_value);
-                    return true;
-                }
-
-                // Check if the types holds an enum
-                if (val.type ().is_enum ()) {
-                    int enum_value = val.get_enum ();
-                    result = EnumClass.to_string (val.type (), enum_value);
-                    return true;
-                }
-
-                if (val.holds (typeof(File))) {
-                    var file = (File) val;
-                    if (file != null) {
-                        result = file.get_path ();
-                    }
-                    else {
-                        result = "(null)";
-                    }
-
-                    return true;
-                }
-
-                if (val.holds (typeof(DateTime))) {
-                    var date_time = (DateTime) val;
-                    if (date_time == null) {
-                        result = "(null)";
-                    }
-                    else {
-                        result = date_time.format ("%c");
-                    }
-
-                    return true;
-                }
-
-                foreach (ParsableType t in custom_types) {
-                    if (val.holds (t.type)) {
-                        result = t.func (val);
-                        return true;
-                    }
-                }
-
-                result = "";
-                return false;
-        }
     }
 }

@@ -73,6 +73,10 @@ namespace Valentine.Parser {
         return variant.print (false);
     }
 
+    internal inline string value_string_array_to_string (Value val) {
+        return val.strdup_contents ();
+    }
+
     internal inline string value_flags_to_string (Value val) {
         uint flags_value = val.get_flags ();
         return FlagsClass.to_string (val.type (), flags_value);
