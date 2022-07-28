@@ -5,11 +5,12 @@ dependencies = [
   dependency('glib-2.0'),
   dependency('gobject-2.0'),
   dependency('gio-2.0'),
+  dependency('gee-0.8'),
 ]
 
 pkgconfig = import('pkgconfig')
 
-PKGCONFIG_DEPS = ['glib-2.0', 'gobject-2.0', 'gio-2.0']
+PKGCONFIG_DEPS = ['glib-2.0', 'gobject-2.0', 'gio-2.0', 'gee-0.8']
 API_VERSION = '0.1'
 vapidir = get_option('datadir') / 'vala' / 'vapi'
 

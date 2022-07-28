@@ -10,6 +10,7 @@ sources = files([
   'enums.vala',
   'delegates.vala',
   'ObjectWriter.vala',
+  'Parser.vala',
   'structs.vala',
   ])
 
@@ -74,6 +75,7 @@ if get_option('enable_valadoc')
       '--pkg=glib-2.0',
       '--pkg=gobject-2.0',
       '--pkg=gio-2.0',
+      '--pkg=gee-0.8',
       '-o', meson.current_build_dir() / 'Valentine-' + API_VERSION,
       '--doclet',
       'devhelp',
