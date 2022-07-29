@@ -24,7 +24,7 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
 
     public ObjectDeserializer () throws Error {
         Type type = typeof (T);
-        if (type.is_object ()) {
+        if (!type.is_object ()) {
             throw new ObjectWriterError.NOT_OBJECT ("The type given to the serializer is not an Object");
         }
 
@@ -37,6 +37,10 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
                 };
             }
         }
+    }
+
+    construct {
+        deserializable_types.add ({ typeof (int), Deserializer.int_from_string });
     }
 
     public T[] deserialize_from_file (string path) throws Error {
@@ -69,21 +73,51 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
         // Reading Columns
         string[] columns = line.split (",");
 
+        int l = 0; // Line counter
         while ((line = dis.read_line ()) != null) {
+            l++;
             string[] cells = {};
             string cell = "";
 
             for (int i = 0; i < line.length; i++) {
                 unichar c = line.get_char (i);
 
-                if (c == ',' && line.get_char (i+1) == '"' && line.get_char (i+2) == '"') {
+                if (c == ',' && line.get_char (i+1) == '"' && line.get_char (i+2) != '"') {
                     cells += parse_cell (cell);
                     cell = "";
+                    continue;
+                }
+                else if (c == '"' && i == line.length - 1) {
+                    cells += parse_cell (cell);
+                    cell = "";
+                    continue;
                 }
                 cell += c.to_string ();
             }
 
-            assert (cell.length == columns.length);
+            if (cells.length != columns.length) {
+                warning ("Something went wrong parsing line %i, skipping...", l);
+                continue;
+            }
+
+            Object obj = Object.new (typeof(T));
+            for (int i = 0; i < cells.length; i++) {
+                foreach (Property p in deserializable_properties) {
+                    if (p.name == columns[i]) {
+                        deserializable_types.foreach ((t) => {
+                            if (t.type == p.type) {
+                                Value val = t.func (cells[i]);
+                                obj.set_property (p.name, val);
+
+                                return false;
+                            }
+                            return true;
+                        });
+                    }
+                }
+            }
+
+            array += (T) obj;
         }
 
         return array;
@@ -114,12 +148,12 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
         string to_replace = "\"";
         string replacement = "";
         for (int i = 0; i < quote_level; i++) {
-            result.replace (to_replace, replacement);
+            result = result.replace (to_replace, replacement);
             to_replace += "\"";
             replacement += "\"";
         }
 
-        return cell;
+        return result;
     }
 
     public void add_custom_parser_for_type (Type type, TypeDeserializationFunc func) {

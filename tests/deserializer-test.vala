@@ -8,9 +8,14 @@ public static int main (string[] args) {
 public void test_func () {
     try {
         var deserializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
-        deserializer.deserialize_from_file ("/var/home/diegoivan/basic-types.csv");
+        BasicTypesClass[] objects = deserializer.deserialize_from_file ("/var/home/diegoivan/basic-types.csv");
+
+        foreach (var obj in objects) {
+            stdout.printf ("%i\n", obj.integer);
+        }
     }
     catch (Error e) {
+        critical (e.message);
     }
 }
 
