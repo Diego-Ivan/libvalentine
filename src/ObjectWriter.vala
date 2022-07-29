@@ -26,12 +26,11 @@
  *
  */
 [Version (since="0.1")]
-public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
+public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter, Valentine.TypeParser {
     private Valentine.Property[] readable_properties = {};
     private List<T> object_list = new List<T> ();
 
     private Gee.LinkedList<ParsableType?> parsable_types = new Gee.LinkedList<ParsableType?> ();
-    private Gee.LinkedList<Property?> parsable_properties = new Gee.LinkedList<Property?> ();
 
     /**
      * Constructs a new {@link Valentine.ObjectWriter} with the Type given
@@ -85,23 +84,14 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
 
     [Version (since="0.1")]
     public override string to_string () {
+        Gee.LinkedList<Property?> parsable_properties = new Gee.LinkedList<Property?> ();
         // First, we will discard properties that are not parsable
         foreach (Property property in readable_properties) {
-            bool found = false;
-
-            parsable_types.foreach ((type) => {
-                if (property.type == type.type) {
-                    found = true;
-                    return false;
-                }
-
-                return true;
-            });
-
-            if (found || property.type.is_flags () || property.type.is_enum ()) {
+            if (supports_type (property.type)) {
                 parsable_properties.add (property);
                 continue;
             }
+
             debug ("A parser for property type %s was not found", property.type.name ());
         }
 
@@ -196,5 +186,14 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter {
     [Version (since="0.1")]
     public void add_custom_parser_for_type (Type type, TypeConversionFunc func) {
         parsable_types.add ({type, func});
+    }
+
+    public bool supports_type (Type type) {
+        foreach (ParsableType t in parsable_types) {
+            if (t.type == type) {
+                return true;
+            }
+        }
+        return type.is_enum () || type.is_flags ();
     }
 }

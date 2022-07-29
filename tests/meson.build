@@ -9,6 +9,7 @@ valentine_tests = [
   'adw_flap',
   'performance',
   'string_array',
+  'deserializer'
 ]
 
 test_dependencies = [

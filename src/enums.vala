@@ -88,4 +88,10 @@ namespace Valentine {
          */
         NOT_OBJECT
     }
+
+    [Version(since="0.2")]
+    public errordomain DeserializerError {
+        FILE_NOT_EXISTS,
+        FILE_NOT_CSV
+    }
 }

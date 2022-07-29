@@ -10,8 +10,11 @@ sources = files([
   'enums.vala',
   'delegates.vala',
   'ObjectWriter.vala',
+  'ObjectDeserializer.vala',
+  'Deserializer.vala',
   'Parser.vala',
   'structs.vala',
+  'TypeParser.vala',
   ])
 
 liblibvalentine = library('libvalentine-' + API_VERSION,

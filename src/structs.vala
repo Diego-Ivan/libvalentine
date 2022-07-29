@@ -28,4 +28,9 @@ namespace Valentine {
         public Type type;
         public unowned TypeConversionFunc func;
     }
+
+    private struct DeserializableType {
+        public Type type;
+        public unowned TypeDeserializationFunc func;
+    }
 }

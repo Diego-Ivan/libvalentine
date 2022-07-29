@@ -1,0 +1,141 @@
+/* ObjectSerializer.vala
+ *
+ * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
+ *
+ * This file is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This file is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ */
+
+public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
+    private Valentine.Property[] writable_properties = {};
+    private Gee.LinkedList<DeserializableType?> deserializable_types = new Gee.LinkedList<DeserializableType?> ();
+
+    public ObjectDeserializer () throws Error {
+        Type type = typeof (T);
+        if (type.is_object ()) {
+            throw new ObjectWriterError.NOT_OBJECT ("The type given to the serializer is not an Object");
+        }
+
+        ObjectClass klass = (ObjectClass) type.class_ref ();
+        foreach (ParamSpec spec in klass.list_properties ()) {
+            if (WRITABLE in spec.flags) {
+                writable_properties += Valentine.Property () {
+                    name = spec.name,
+                    type = spec.value_type
+                };
+            }
+        }
+    }
+
+    public T[] deserialize_from_file (string path) throws Error {
+        File file = File.new_for_path (path);
+        if (!file.query_exists ()) {
+            throw new DeserializerError.FILE_NOT_EXISTS ("File for path %s does not exist", path);
+        }
+
+        FileInfo info = file.query_info ("standard::*", NOFOLLOW_SYMLINKS);
+        if (info.get_content_type () != "text/csv") {
+            throw new DeserializerError.FILE_NOT_CSV ("The file given is not a CSV file");
+        }
+
+        // Checking that we have deserializers for properties
+        Valentine.Property[] deserializable_properties = {};
+        foreach (Property p in writable_properties) {
+            if (supports_type (p.type)) {
+                deserializable_properties += p;
+                continue;
+            }
+            debug ("Deserializer not available for property %s", p.name);
+        }
+
+        T[] array = {};
+
+        FileInputStream stream = file.read ();
+        DataInputStream dis = new DataInputStream (stream);
+
+        string line = dis.read_line ();
+        // Reading Columns
+        string[] columns = line.split (",");
+
+        while ((line = dis.read_line ()) != null) {
+            string[] cells = {};
+            string cell = "";
+
+            for (int i = 0; i < line.length; i++) {
+                unichar c = line.get_char (i);
+
+                if (c == ',' && line.get_char (i+1) == '"' && line.get_char (i+2) == '"') {
+                    cells += parse_cell (cell);
+                    cell = "";
+                }
+                cell += c.to_string ();
+            }
+
+            assert (cell.length == columns.length);
+        }
+
+        return array;
+    }
+
+    private string parse_cell (string cell) {
+        string result = cell;
+        int quote_level = 0;
+        for (int i = 0; i < cell.length; i++) {
+            if (cell.get_char (i) == '"') {
+                quote_level++;
+            }
+        }
+
+        /*
+         * Above we were looking for quotes, and the indentation level is how we have to replace quotes,
+         * if the number is even, it means we have found the actual amount of open and close quote
+         * matches, in case it's odd, it means we have found a single quote without a pair, and therefore
+         * we'll remove it from the quote level
+         *
+         */
+        if ((quote_level % 2) != 0) {
+            quote_level--;
+        }
+
+        quote_level /= 2;
+
+        string to_replace = "\"";
+        string replacement = "";
+        for (int i = 0; i < quote_level; i++) {
+            result.replace (to_replace, replacement);
+            to_replace += "\"";
+            replacement += "\"";
+        }
+
+        return cell;
+    }
+
+    public void add_custom_parser_for_type (Type type, TypeDeserializationFunc func) {
+        deserializable_types.add (Valentine.DeserializableType () {
+            type = type,
+            func = func
+        });
+    }
+
+    public bool supports_type (Type type) {
+        foreach (DeserializableType t in deserializable_types) {
+            if (t.type == type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

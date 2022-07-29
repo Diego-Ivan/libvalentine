@@ -1,4 +1,4 @@
-/* delegates.vala
+/* Serializer.vala
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
@@ -18,19 +18,14 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-namespace Valentine {
-    /**
-     * UserConversionFunc allows to parse types that cannot be automatically parsed by Valentine.
-     *
-     * The function gives a {@link GLib.Value} and expects that a string is returned. This strings must be
-     * given by the developer at the end of the processing process
-     *
-     * @param val a {@link GLib.Value} that holds the custom type that should be processed into a string
-     * @return The string that will be written into the CSV file
-     */
-    [Version (since="0.1")]
-    public delegate string TypeConversionFunc (Value val);
+namespace Valentine.Deserializer {
+    public Value int_from_string (string str) {
+        Value val = Value (typeof(int));
+        int result;
+        if (int.try_parse (str, out result) || str != "(null)") {
+            val.set_int (result);
+        }
 
-    [Version (since="0.2")]
-    public delegate Value TypeDeserializationFunc (string str);
+        return val;
+    }
 }

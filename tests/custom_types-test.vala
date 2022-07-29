@@ -12,6 +12,7 @@ public static int main (string[] args) {
     Test.init (ref args);
     Test.add_func ("/structs", custom_type_func);
     Test.add_func ("/structs-null", custom_type_and_null_func);
+    Test.add_func ("/unsupported", type_unsupported);
 
     return Test.run ();
 }
@@ -34,6 +35,30 @@ public void custom_type_func () {
         }
 
         writer.add_custom_parser_for_type (typeof(Person), conversion_func);
+        stdout.printf (writer.to_string ());
+    }
+    catch (Error e) {
+        critical (e.message);
+    }
+}
+
+public void type_unsupported () {
+    Person[] people = {
+        { "Diego", 17 },
+        { "George", 20 },
+        { "Lucas", 29 },
+        { "Daniela", 18 },
+        { "Luna", 25 },
+    };
+
+    try {
+        var writer = new Valentine.ObjectWriter<MyObject> ();
+        for (int i = 0; i < people.length; i++) {
+            writer.add_object (new MyObject () {
+                person = people[i]
+            });
+        }
+
         stdout.printf (writer.to_string ());
     }
     catch (Error e) {
