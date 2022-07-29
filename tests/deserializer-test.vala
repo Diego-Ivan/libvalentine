@@ -10,13 +10,29 @@ public void test_func () {
         var deserializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
         BasicTypesClass[] objects = deserializer.deserialize_from_file ("/var/home/diegoivan/basic-types.csv");
 
+        var serializer = new Valentine.ObjectWriter<BasicTypesClass> ();
         foreach (var obj in objects) {
-            stdout.printf ("%i\n", obj.integer);
+            serializer.add_object (obj);
         }
+
+        print (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);
     }
+}
+
+public enum MyEnum {
+    VALUE_1,
+    VALUE_2
+}
+
+[Flags]
+public enum MyFlags {
+    FLAG_1,
+    FLAG_2,
+    FLAG_3,
+    FLAG_4
 }
 
 public class BasicTypesClass : Object {

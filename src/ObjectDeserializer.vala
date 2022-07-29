@@ -1,4 +1,4 @@
-/* ObjectSerializer.vala
+/* ObjectDeserializer.vala
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
@@ -40,7 +40,13 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
     }
 
     construct {
-        deserializable_types.add ({ typeof (int), Deserializer.int_from_string });
+        deserializable_types.add ({ typeof (int), Deserializer.value_int_from_string });
+        deserializable_types.add ({ typeof (uint), Deserializer.value_uint_from_string });
+        deserializable_types.add ({ typeof (bool), Deserializer.value_boolean_from_string });
+        deserializable_types.add ({ typeof (string), Deserializer.value_string_from_string });
+        deserializable_types.add ({ typeof (long), Deserializer.value_long_from_string });
+        deserializable_types.add ({ typeof (DateTime), Deserializer.value_datetime_from_string });
+        deserializable_types.add ({ typeof (File), Deserializer.value_file_from_string });
     }
 
     public T[] deserialize_from_file (string path) throws Error {
@@ -104,15 +110,34 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
             for (int i = 0; i < cells.length; i++) {
                 foreach (Property p in deserializable_properties) {
                     if (p.name == columns[i]) {
+
+                        bool found = false;
                         deserializable_types.foreach ((t) => {
                             if (t.type == p.type) {
                                 Value val = t.func (cells[i]);
                                 obj.set_property (p.name, val);
+                                found = true;
 
                                 return false;
                             }
                             return true;
                         });
+
+                        if (found) {
+                            break;
+                        }
+
+                        if (p.type.is_enum ()) {
+                            Value val = Deserializer.value_enum_from_string (cells[i], p.type);
+                            obj.set_property (p.name, val);
+                            break;
+                        }
+
+                        if (p.type.is_flags ()) {
+                            Value val = Deserializer.value_flags_from_string (cells[i], p.type);
+                            obj.set_property (p.name, val);
+                            break;
+                        }
                     }
                 }
             }
