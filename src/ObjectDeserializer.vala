@@ -42,9 +42,16 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
     construct {
         deserializable_types.add ({ typeof (int), Deserializer.value_int_from_string });
         deserializable_types.add ({ typeof (uint), Deserializer.value_uint_from_string });
+        deserializable_types.add ({ typeof (float), Deserializer.value_float_from_string });
+        deserializable_types.add ({ typeof (double), Deserializer.value_double_from_string });
         deserializable_types.add ({ typeof (bool), Deserializer.value_boolean_from_string });
         deserializable_types.add ({ typeof (string), Deserializer.value_string_from_string });
         deserializable_types.add ({ typeof (long), Deserializer.value_long_from_string });
+        deserializable_types.add ({ typeof (ulong), Deserializer.value_ulong_from_string });
+        deserializable_types.add ({ typeof (uchar), Deserializer.value_uchar_from_string } );
+        deserializable_types.add ({ typeof (char), Deserializer.value_char_from_string });
+        deserializable_types.add ({ typeof (unichar), Deserializer.value_unichar_from_string });
+        deserializable_types.add ({typeof (Variant), Deserializer.value_variant_from_string });
         deserializable_types.add ({ typeof (DateTime), Deserializer.value_datetime_from_string });
         deserializable_types.add ({ typeof (File), Deserializer.value_file_from_string });
     }

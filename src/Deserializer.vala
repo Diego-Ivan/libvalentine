@@ -46,11 +46,91 @@ namespace Valentine.Deserializer {
         return val;
     }
 
+    internal inline Value value_uchar_from_string (string str) {
+        Value val = Value (typeof (uchar));
+        uint result;
+        if ((uint.try_parse (str, out result) && result >= 0 && result <= 255) || str != "(null)") {
+            val.set_uchar ((uchar) result);
+        }
+
+        return val;
+    }
+
+    internal inline Value value_char_from_string (string str) {
+        Value val = Value (typeof (char));
+        if (str == "(null)") {
+            return val;
+        }
+
+        int result;
+        if (int.try_parse (str, out result) && result >= 0 && result <= 127) {
+            val.set_schar ((int8) result);
+        }
+        else {
+            val.set_schar ((int8) str.get_char (0));
+        }
+
+        return val;
+    }
+
+    internal inline Value value_unichar_from_string (string str) {
+        Value val = Value (typeof (unichar));
+        if (str == "(null)") {
+            return val;
+        }
+
+        val.set_uint ((uint) str.get_char (0));
+        return val;
+    }
+
     internal inline Value value_long_from_string (string str) {
         Value val = Value (typeof(long));
         long result;
         if (long.try_parse (str, out result) || str != "(null)") {
             val.set_long (result);
+        }
+
+        return val;
+    }
+
+    internal inline Value value_ulong_from_string (string str) {
+        Value val = Value (typeof(ulong));
+        ulong result;
+        if (ulong.try_parse (str, out result) || str != "(null)") {
+            val.set_ulong (result);
+        }
+
+        return val;
+    }
+
+    internal inline Value value_float_from_string (string str) {
+        Value val = Value (typeof(float));
+        float result;
+        if (float.try_parse (str, out result) || str != "(null)") {
+            val.set_float (result);
+        }
+
+        return val;
+    }
+
+    internal inline Value value_double_from_string (string str) {
+        Value val = Value (typeof(double));
+        double result;
+        if (double.try_parse (str, out result) || str != "(null)") {
+            val.set_double (result);
+        }
+
+        return val;
+    }
+
+    internal inline Value value_variant_from_string (string str) {
+        Value val = Value (typeof(Variant));
+        try {
+            Variant res = Variant.parse (null, str);
+            val.set_variant (res);
+        }
+        catch (Error e) {
+            return val;
         }
 
         return val;
