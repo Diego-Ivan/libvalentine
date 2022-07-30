@@ -18,6 +18,13 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
+/**
+ * A class that deserializes objects from a CSV file given.
+ *
+ * This class receives the path of the CSV file and returns an array of Objects with the properties
+ * defined in the CSV file
+ */
+[Version (since="0.2", experimental=true, experimental_until="0.3")]
 public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
     private Valentine.Property[] writable_properties = {};
     private Gee.LinkedList<DeserializableType?> deserializable_types = new Gee.LinkedList<DeserializableType?> ();
@@ -56,6 +63,14 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
         deserializable_types.add ({ typeof (File), Deserializer.value_file_from_string });
     }
 
+    /**
+     * The method that executes the deserialization from a given file.
+     *
+     * This method parses the file and creates objects with the properties defined in the CSV file.
+     *
+     * @param path The path to the CSV file
+     * @return An array of objects
+     */
     public T[] deserialize_from_file (string path) throws Error {
         File file = File.new_for_path (path);
         if (!file.query_exists ()) {

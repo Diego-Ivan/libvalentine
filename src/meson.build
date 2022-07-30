@@ -2,7 +2,7 @@ conf = configuration_data()
 conf.set('prefix', get_option('prefix'))
 conf.set('libdir', get_option ('libdir'))
 conf.set('PROJECT_NAME', 'libvalentine')
-conf.set('PROJECT_VERSION', '0.0.1')
+conf.set('PROJECT_VERSION', meson.project_version ())
 conf.set('API_VERSION', API_VERSION)
 
 sources = files([

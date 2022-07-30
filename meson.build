@@ -1,5 +1,5 @@
 project('libvalentine', 'vala', 'c',
-  version: '0.0.1')
+  version: '0.2')
 
 dependencies = [
   dependency('glib-2.0'),
@@ -11,7 +11,7 @@ dependencies = [
 pkgconfig = import('pkgconfig')
 
 PKGCONFIG_DEPS = ['glib-2.0', 'gobject-2.0', 'gio-2.0', 'gee-0.8']
-API_VERSION = '0.1'
+API_VERSION = meson.project_version ()
 vapidir = get_option('datadir') / 'vala' / 'vapi'
 
 add_project_arguments(['--enable-experimental'], language: 'vala')
