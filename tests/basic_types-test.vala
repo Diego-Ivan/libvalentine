@@ -1,5 +1,11 @@
+string base_dir;
+
 public static int main (string[] args) {
     Test.init (ref args);
+    base_dir = Path.build_path (Path.DIR_SEPARATOR_S, Environment.get_user_special_dir (DOCUMENTS), "Valentine Tests", "Basic-Types Test");
+
+    DirUtils.create_with_parents (base_dir, 0755);
+
     Test.add_func ("/basic-types", non_null_test);
     Test.add_func ("/basic-types-null", null_test);
 
@@ -13,7 +19,26 @@ public void non_null_test () {
             writer.add_object (new BasicTypesClass () { str = "string", ch = 'c', uc = 'u', integer = i, uinteger = i+3, longint = long.MAX, longuint = ulong.MAX, db = 1.2413424, fl = (float) 1.243 });
         }
 
-        stdout.printf (writer.to_string ());
+        File file = File.new_for_path (Path.build_filename (base_dir, "non-null.csv"));
+        if (!file.query_exists ()) {
+            file.create (NONE);
+        }
+
+        string output_serializer = writer.to_string ();
+        print ("Expected Output from deserializer: \n%s", output_serializer);
+        FileUtils.set_contents (file.get_path (), output_serializer);
+
+        print ("Received input from deserializer: \n");
+
+        var serializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
+        BasicTypesClass[] deserialized = serializer.deserialize_from_file (file.get_path ());
+
+        var iwriter = new Valentine.ObjectWriter<BasicTypesClass> ();
+        foreach (var obj in deserialized) {
+            iwriter.add_object (obj);
+        }
+
+        print (iwriter.to_string ());
     }
     catch (Error e) {
         critical (e.message);
@@ -28,7 +53,26 @@ public void null_test () {
             writer.add_object (new BasicTypesClass ());
         }
 
-        stdout.printf (writer.to_string ());
+        File file = File.new_for_path (Path.build_filename (base_dir, "null.csv"));
+        if (!file.query_exists ()) {
+            file.create (NONE);
+        }
+
+        string output_serializer = writer.to_string ();
+        print ("Expected Output from deserializer: \n%s", output_serializer);
+        FileUtils.set_contents (file.get_path (), output_serializer);
+
+        print ("Received input from deserializer: \n");
+
+        var serializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
+        BasicTypesClass[] deserialized = serializer.deserialize_from_file (file.get_path ());
+
+        var iwriter = new Valentine.ObjectWriter<BasicTypesClass> ();
+        foreach (var obj in deserialized) {
+            iwriter.add_object (obj);
+        }
+
+        print (iwriter.to_string ());
     }
     catch (Error e) {
         critical (e.message);
