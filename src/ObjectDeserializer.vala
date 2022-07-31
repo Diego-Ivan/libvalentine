@@ -25,7 +25,7 @@
  * defined in the CSV file
  */
 [Version (since="0.2", experimental=true, experimental_until="0.3")]
-public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
+public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
     private Valentine.Property[] writable_properties = {};
     private Gee.LinkedList<DeserializableType?> deserializable_types = new Gee.LinkedList<DeserializableType?> ();
 
@@ -110,12 +110,13 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
             for (int i = 0; i < line.length; i++) {
                 unichar c = line.get_char (i);
 
-                if (c == ',' && line.get_char (i+1) == '"' && line.get_char (i+2) != '"') {
+                if (c == ',' && line.get_char (i+1) == '"' && (line.get_char (i+2) != '"' || line.get_char (i+3) == ',')) {
                     cells += parse_cell (cell);
                     cell = "";
                     continue;
                 }
                 else if (c == '"' && i == line.length - 1) {
+                    cell += '"'.to_string ();
                     cells += parse_cell (cell);
                     cell = "";
                     continue;
@@ -124,6 +125,7 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
             }
 
             if (cells.length != columns.length) {
+                debug ("Cells Length: %i. Columns Length: %i", cells.length, columns.length);
                 warning ("Something went wrong parsing line %i, skipping...", l);
                 continue;
             }
@@ -166,6 +168,8 @@ public class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
 
             array += (T) obj;
         }
+
+        dis.close ();
 
         return array;
     }
