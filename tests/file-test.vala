@@ -13,7 +13,7 @@ public void file_test_func () {
     };
 
     try {
-        var writer = new Valentine.ObjectWriter<FileObject> ();
+        var writer = new Valentine.ObjectSerializer<FileObject> ();
         for (int i = 0; i < objects.length; i++) {
             writer.add_object (objects[i]);
         }

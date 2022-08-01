@@ -14,7 +14,7 @@ public static int main (string[] args) {
 
 public void non_null_test () {
     try {
-        var writer = new Valentine.ObjectWriter<BasicTypesClass> ();
+        var writer = new Valentine.ObjectSerializer<BasicTypesClass> ();
         for (int i = 0; i < 10; i++) {
             writer.add_object (new BasicTypesClass () { str = "string", ch = 'c', uc = 'u', integer = i, uinteger = i+3, longint = long.MAX, longuint = ulong.MAX, db = 1.2413424, fl = (float) 1.243 });
         }
@@ -33,7 +33,7 @@ public void non_null_test () {
         var serializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
         BasicTypesClass[] deserialized = serializer.deserialize_from_file (file.get_path ());
 
-        var iwriter = new Valentine.ObjectWriter<BasicTypesClass> ();
+        var iwriter = new Valentine.ObjectSerializer<BasicTypesClass> ();
         foreach (var obj in deserialized) {
             iwriter.add_object (obj);
         }
@@ -48,7 +48,7 @@ public void non_null_test () {
 
 public void null_test () {
     try {
-        var writer = new Valentine.ObjectWriter<BasicTypesClass> ();
+        var writer = new Valentine.ObjectSerializer<BasicTypesClass> ();
         for (int i = 0; i < 10; i++) {
             writer.add_object (new BasicTypesClass ());
         }
@@ -67,7 +67,7 @@ public void null_test () {
         var serializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
         BasicTypesClass[] deserialized = serializer.deserialize_from_file (file.get_path ());
 
-        var iwriter = new Valentine.ObjectWriter<BasicTypesClass> ();
+        var iwriter = new Valentine.ObjectSerializer<BasicTypesClass> ();
         foreach (var obj in deserialized) {
             iwriter.add_object (obj);
         }
