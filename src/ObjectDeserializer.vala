@@ -92,119 +92,43 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
             debug ("Deserializer not available for property %s", p.name);
         }
 
-        T[] array = {};
 
         FileInputStream stream = file.read ();
         DataInputStream dis = new DataInputStream (stream);
 
-        string line = dis.read_line ();
         // Reading Columns
+        string line = dis.read_line ();
         string[] columns = line.split (",");
 
         int l = 0; // Line counter
+        DeserializerLine<T>[] lines = {};
         while ((line = dis.read_line ()) != null) {
             l++;
-            string[] cells = {};
-            string cell = "";
-
-            for (int i = 0; i < line.length; i++) {
-                unichar c = line.get_char (i);
-
-                if (c == ',' && line.get_char (i+1) == '"' && (line.get_char (i+2) != '"' || line.get_char (i+3) == ',')) {
-                    cells += parse_cell (cell);
-                    cell = "";
-                    continue;
-                }
-                else if (c == '"' && i == line.length - 1) {
-                    cell += '"'.to_string ();
-                    cells += parse_cell (cell);
-                    cell = "";
-                    continue;
-                }
-                cell += c.to_string ();
-            }
-
-            if (cells.length != columns.length) {
-                debug ("Cells Length: %i. Columns Length: %i", cells.length, columns.length);
-                warning ("Something went wrong parsing line %i, skipping...", l);
-                continue;
-            }
-
-            Object obj = Object.new (typeof(T));
-            for (int i = 0; i < cells.length; i++) {
-                foreach (Property p in deserializable_properties) {
-                    if (p.name == columns[i]) {
-
-                        bool found = false;
-                        deserializable_types.foreach ((t) => {
-                            if (t.type == p.type) {
-                                Value val = t.func (cells[i]);
-                                obj.set_property (p.name, val);
-                                found = true;
-
-                                return false;
-                            }
-                            return true;
-                        });
-
-                        if (found) {
-                            break;
-                        }
-
-                        if (p.type.is_enum ()) {
-                            Value val = Deserializer.value_enum_from_string (cells[i], p.type);
-                            obj.set_property (p.name, val);
-                            break;
-                        }
-
-                        if (p.type.is_flags ()) {
-                            Value val = Deserializer.value_flags_from_string (cells[i], p.type);
-                            obj.set_property (p.name, val);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            array += (T) obj;
+            lines += new DeserializerLine<T> (line, l);
         }
-
         dis.close ();
 
+        Gee.ConcurrentList<T> t_list = new Gee.ConcurrentList<T> ();
+        int completed = 0;
+        ThreadPool<DeserializerLine<T>> thread_pool = new ThreadPool<DeserializerLine<T>>.with_owned_data ((line_deserializer) => {
+            t_list.add (line_deserializer.deserialize_line (ref columns, ref deserializable_properties, deserializable_types));
+            completed++;
+        }, 4, false);
+
+        for (int i = 0; i < lines.length; i++) {
+            thread_pool.add (lines[i]);
+        }
+
+        while (completed != l) {
+            debug (thread_pool.unprocessed ().to_string ());
+        }
+
+        T[] array = {};
+        foreach (T obj in t_list) {
+            array += obj;
+        }
+
         return array;
-    }
-
-    private string parse_cell (string cell) {
-        string result = cell;
-        int quote_level = 0;
-        for (int i = 0; i < cell.length; i++) {
-            if (cell.get_char (i) == '"') {
-                quote_level++;
-            }
-        }
-
-        /*
-         * Above we were looking for quotes, and the indentation level is how we have to replace quotes,
-         * if the number is even, it means we have found the actual amount of open and close quote
-         * matches, in case it's odd, it means we have found a single quote without a pair, and therefore
-         * we'll remove it from the quote level
-         *
-         */
-        if ((quote_level % 2) != 0) {
-            quote_level--;
-        }
-
-        quote_level /= 2;
-
-        string to_replace = "\"";
-        string replacement = "";
-        for (int i = 0; i < quote_level; i++) {
-            result = result.replace (to_replace, replacement);
-            to_replace += "\"";
-            replacement += "\"";
-        }
-
-        return result;
     }
 
     public void add_custom_parser_for_type (Type type, TypeDeserializationFunc func) {
@@ -224,3 +148,4 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         return false;
     }
 }
+
