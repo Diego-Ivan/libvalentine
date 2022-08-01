@@ -20,7 +20,7 @@ sources = files([
   'TypeParser.vala',
   ])
 
-liblibvalentine = library('libvalentine-' + API_VERSION,
+libvalentine = library('libvalentine-' + API_VERSION,
   sources,
   vala_header: 'libvalentine.h',
   vala_vapi: 'libvalentine-' + API_VERSION + '.vapi',
@@ -39,26 +39,26 @@ liblibvalentine = library('libvalentine-' + API_VERSION,
 )
 
 valentine_dep = declare_dependency(
-  link_with: liblibvalentine,
+  link_with: libvalentine,
   dependencies: dependencies,
   include_directories: [include_directories('.')],
 )
 
 if g_ir_compiler.found()
-  custom_target('liblibvalentine-typelib',
+  custom_target('libvalentine-typelib',
     command: [
       g_ir_compiler,
-      '--shared-library', 'liblibvalentine-@0@.so'.format (API_VERSION),
+      '--shared-library', 'libvalentine-@0@.so'.format (API_VERSION),
       '--output', '@OUTPUT@',
       meson.current_build_dir() / 'Valentine-' + API_VERSION + '.gir'
     ],
     output: 'Valentine-' + API_VERSION + '.typelib',
-    depends: liblibvalentine,
+    depends: libvalentine,
     install: true,
     install_dir: join_paths(get_option('libdir'), 'girepository-1.0'))
 endif
 
-pkgconfig.generate(liblibvalentine,
+pkgconfig.generate(libvalentine,
   subdirs: 'libvalentine-' + API_VERSION,
   version: API_VERSION,
   name: 'libvalentine',
