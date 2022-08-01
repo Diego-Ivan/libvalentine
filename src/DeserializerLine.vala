@@ -21,12 +21,13 @@
 internal class Valentine.DeserializerLine<T> {
     public string line { get; private set; }
     public int line_number { get; private set; }
+    public Object result { get; private set; }
     public DeserializerLine (string l, int n_line) {
         line = l;
         line_number = n_line;
     }
 
-    public T deserialize_line (ref string[] columns, ref Property[] deserializable_properties, Gee.LinkedList<DeserializableType?> deserializable_types) {
+    public void deserialize_line (ref string[] columns, ref Property[] deserializable_properties, Gee.LinkedList<DeserializableType?> deserializable_types) {
         Object obj = Object.new (typeof (T));
         string[] cells = {};
         string cell = "";
@@ -50,7 +51,7 @@ internal class Valentine.DeserializerLine<T> {
 
         if (cells.length != columns.length) {
             warning ("Error found in line %i: Number of Elements in line (%i) do not match number of properties (%i)", line_number, cells.length, columns.length);
-            return obj;
+            result = obj;
         }
 
         for (int i = 0; i < columns.length; i++) {
@@ -86,7 +87,7 @@ internal class Valentine.DeserializerLine<T> {
             }
         }
 
-        return (T) obj;
+        result = obj;
     }
 
     private string parse_cell (string cell) {

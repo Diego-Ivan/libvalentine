@@ -108,23 +108,21 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         }
         dis.close ();
 
-        Gee.ConcurrentList<T> t_list = new Gee.ConcurrentList<T> ();
-        int completed = 0;
+        var queue = new AsyncQueue<DeserializerLine<T>> ();
         ThreadPool<DeserializerLine<T>> thread_pool = new ThreadPool<DeserializerLine<T>>.with_owned_data ((line_deserializer) => {
-            t_list.add (line_deserializer.deserialize_line (ref columns, ref deserializable_properties, deserializable_types));
-            completed++;
+            line_deserializer.deserialize_line (ref columns, ref deserializable_properties, deserializable_types);
+            queue.push_sorted (line_deserializer, object_sort_func);
         }, 4, false);
 
         for (int i = 0; i < lines.length; i++) {
             thread_pool.add (lines[i]);
         }
 
-        while (completed != l) {
-        }
+        while (queue.length () != l);
 
         T[] array = {};
-        foreach (T obj in t_list) {
-            array += obj;
+        for (int i= 0; i < l; i++) {
+            array += queue.pop ().result;
         }
 
         return array;
@@ -145,6 +143,10 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         }
 
         return false;
+    }
+
+    private int object_sort_func (DeserializerLine line_a, DeserializerLine line_b) {
+        return line_a.line_number - line_b.line_number;
     }
 }
 
