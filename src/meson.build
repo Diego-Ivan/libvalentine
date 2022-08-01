@@ -11,6 +11,8 @@ sources = files([
   'delegates.vala',
   'ObjectWriter.vala',
   'ObjectDeserializer.vala',
+  'ObjectSerializer.vala',
+  'SerializerLine.vala',
   'Deserializer.vala',
   'DeserializerLine.vala',
   'Parser.vala',

@@ -120,7 +120,6 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         }
 
         while (completed != l) {
-            debug (thread_pool.unprocessed ().to_string ());
         }
 
         T[] array = {};

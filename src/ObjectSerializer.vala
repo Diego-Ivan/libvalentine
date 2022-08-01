@@ -1,4 +1,4 @@
-/* ObjectWriter.vala
+/* ObjectSerializer.vala
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
@@ -19,26 +19,26 @@
  */
 
 /**
- * A {@link Valentine.AbstractWriter} implementation that converts {@link GLib.Object}s into a CSV file
+ * An {@link AbstractWriter} implementation that converts {@link GLib.Object}s into a CSV file
  *
  * This class that will generate the CSV file based on the information provided by the {@link GLib.ParamSpec}
  * given by the object type given to #this
  *
  */
-[Version (since="0.1", deprecated=true, deprecated_since="0.2.5", replacement="Valentine.ObjectSerializer")]
-public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter, Valentine.TypeParser {
+[Version (since="0.2.5", experimental=true, experimental_until="0.3")]
+public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Valentine.TypeParser {
     private Valentine.Property[] readable_properties = {};
-    private List<T> object_list = new List<T> ();
+    private List<Object> object_list = new List<Object> ();
 
     private Gee.LinkedList<ParsableType?> parsable_types = new Gee.LinkedList<ParsableType?> ();
 
     /**
-     * Constructs a new {@link Valentine.ObjectWriter} with the Type given
+     * Constructs a new {@link ObjectSerializer} with the Type given
      *
      * For this implementation, the type must be a {@link GLib.Object} or a derivate. Otherwise, it will
      * throw an Error
      */
-    public ObjectWriter () throws Error {
+    public ObjectSerializer () throws Error {
         Type obj_type = typeof (T);
         if (!obj_type.is_object ()) {
             throw new ObjectWriterError.NOT_OBJECT ("Type given is not an Object");
@@ -77,12 +77,12 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter, Valent
      *
      * This object will be processed later to create the CSV file based on the type information
      */
-    [Version (since="0.1")]
+    [Version (since="0.2.5")]
     public void add_object (T obj) {
-        object_list.append (obj);
+        object_list.append ((Object) obj);
     }
 
-    [Version (since="0.1")]
+    [Version (since="0.2.5")]
     public override string to_string () {
         Gee.LinkedList<Property?> parsable_properties = new Gee.LinkedList<Property?> ();
         // First, we will discard properties that are not parsable
@@ -109,67 +109,28 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter, Valent
             output += "%s%s".printf (parsable_properties.get (i).name, separator);
         }
 
-        object_list.foreach ((item) => {
-            Object obj = (Object) item;
-            for (int i = 0; i < parsable_properties.size; i++) {
-                Valentine.Property property = parsable_properties.get (i);
+        try {
+            int length = (int) object_list.length ();
+            var communication = new AsyncQueue<SerializerLine> ();
 
-                Value val = Value (property.type);
-                obj.get_property (property.name, ref val);
+            var processsing_thread_pool = new ThreadPool<SerializerLine>.with_owned_data ((serializer_line) => {
+                serializer_line.serialize (parsable_properties, parsable_types);
+                communication.push_sorted (serializer_line, lines_sort_func);
+            }, 8, false);
 
-                string s = "";
-                bool found = false;
-                foreach (ParsableType type in parsable_types) {
-                    if (type.type == val.type ()) {
-                        s = type.func (val);
-                        found = true;
-
-                        string str = write_mode.parse_string (s, separator);
-                        if (i == parsable_properties.size - 1) {
-                            str += "\n";
-                        }
-                        else {
-                            str += "%s".printf (separator);
-                        }
-                        output += str;
-
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    if (val.type ().is_flags ()) {
-                        s = Parser.value_flags_to_string (val);
-                        string str = write_mode.parse_string (s, separator);
-
-                        if (i == parsable_properties.size - 1) {
-                            str += "\n";
-                        }
-                        else {
-                            str += "%s".printf (separator);
-                        }
-
-                        output += str;
-                        continue;
-                    }
-
-                    if (val.type ().is_enum ()) {
-                        s = Parser.value_enum_to_string (val);
-                        string str = write_mode.parse_string (s, separator);
-
-                        if (i == parsable_properties.size - 1) {
-                            str += "\n";
-                        }
-                        else {
-                            str += "%s".printf (separator);
-                        }
-
-                        output += str;
-                        continue;
-                    }
-                }
+            for (int i = 0; i < length; i++) {
+                processsing_thread_pool.add (new SerializerLine<T> (object_list.nth_data (i), separator, write_mode, i));
             }
-        });
+
+            while (communication.length () != length);
+
+            for (int i = 0; i < length; i++) {
+                output += communication.pop ().result;
+            }
+        }
+        catch (Error e) {
+            critical (e.message);
+        }
 
         return output;
     }
@@ -183,7 +144,7 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter, Valent
      * @param type The type that will be processed
      * @param func The function that processes the type
      */
-    [Version (since="0.1")]
+    [Version (since="0.2.5")]
     public void add_custom_parser_for_type (Type type, TypeConversionFunc func) {
         parsable_types.add ({type, func});
     }
@@ -195,5 +156,9 @@ public sealed class Valentine.ObjectWriter<T> : Valentine.AbstractWriter, Valent
             }
         }
         return type.is_enum () || type.is_flags ();
+    }
+
+    private int lines_sort_func (SerializerLine a, SerializerLine b) {
+        return a.position - b.position;
     }
 }
