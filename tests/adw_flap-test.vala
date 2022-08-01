@@ -8,7 +8,7 @@ public static int main (string[] args) {
 public void flap_test_func () {
     Adw.init ();
     try {
-        var writer = new Valentine.ObjectWriter<Adw.Flap> ();
+        var writer = new Valentine.ObjectSerializer<Adw.Flap> ();
         for (int i = 0; i < 2000; i++) {
             writer.add_object (new Adw.Flap ());
         }

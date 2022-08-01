@@ -19,7 +19,7 @@ public void performance_func () {
 
     foreach (var obj in test_objects) {
         try {
-            var writer = new Valentine.ObjectWriter<Adw.Flap> ();
+            var writer = new Valentine.ObjectSerializer<Adw.Flap> ();
             for (int i = 0; i < obj.n_objects; i++) {
                 writer.add_object (new Adw.Flap ());
             }
