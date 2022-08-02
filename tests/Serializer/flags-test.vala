@@ -27,12 +27,12 @@ public void flag_enum_test_func () {
     };
 
     try {
-        var writer = new Valentine.ObjectWriter<ExampleClass> ();
+        var serializer = new Valentine.ObjectSerializer<ExampleClass> ();
         for (int i = 0; i < objects.length; i++) {
-            writer.add_object (objects[i]);
+            serializer.add_object (objects[i]);
         }
 
-        stdout.printf (writer.to_string ());
+        stdout.printf (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);
@@ -47,12 +47,12 @@ public void enum_test_func () {
     };
 
     try {
-        var writer = new Valentine.ObjectWriter<EnumKlass> ();
+        var serializer = new Valentine.ObjectSerializer<EnumKlass> ();
         for (int i = 0; i < objects.length; i++) {
-            writer.add_object (objects[i]);
+            serializer.add_object (objects[i]);
         }
 
-        stdout.printf (writer.to_string ());
+        stdout.printf (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);
@@ -67,12 +67,12 @@ public void flags_test_func () {
     };
 
     try {
-        var writer = new Valentine.ObjectWriter<FlagKlass> ();
+        var serializer = new Valentine.ObjectSerializer<FlagKlass> ();
         for (int i = 0; i < objects.length; i++) {
-            writer.add_object (objects[i]);
+            serializer.add_object (objects[i]);
         }
 
-        stdout.printf (writer.to_string ());
+        stdout.printf (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);

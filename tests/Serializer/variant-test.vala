@@ -8,7 +8,7 @@ public static int main (string[] args) {
 
 public void variant_test_func () {
     try {
-        var writer = new Valentine.ObjectWriter<VariantObject> ();
+        var serializer = new Valentine.ObjectSerializer<VariantObject> ();
 	    for (int i = 0; i < 10; i++) {
             VariantBuilder builder = new VariantBuilder (new VariantType ("a{sv}"));
 	        builder.add ("{sv}", "str1", new Variant.string ("str"));
@@ -16,12 +16,12 @@ public void variant_test_func () {
 	        builder.add ("{sv}", "str4", new Variant.int32 (10));
 	        builder.add ("{sv}", "str5", new Variant.int64 (10));
 
-	        writer.add_object (new VariantObject () {
+	        serializer.add_object (new VariantObject () {
 	            name = i.to_string (),
 	            variant = builder.end ()
 	        });
 	    }
-        stdout.printf (writer.to_string ());
+        stdout.printf (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);
@@ -30,7 +30,7 @@ public void variant_test_func () {
 
 public void variant_test_null_func () {
     try {
-        var writer = new Valentine.ObjectWriter<VariantObject> ();
+        var serializer = new Valentine.ObjectSerializer<VariantObject> ();
 	    for (int i = 0; i < 10; i++) {
             VariantBuilder builder = new VariantBuilder (new VariantType ("a{sv}"));
 	        builder.add ("{sv}", "str1", new Variant.string ("str"));
@@ -38,14 +38,14 @@ public void variant_test_null_func () {
 	        builder.add ("{sv}", "str4", new Variant.int32 (10));
 	        builder.add ("{sv}", "str5", new Variant.int64 (10));
 
-	        writer.add_object (new VariantObject () {
+	        serializer.add_object (new VariantObject () {
 	            name = i.to_string (),
 	            variant = builder.end ()
 	        });
 
 	    }
-	    writer.add_object (new VariantObject ());
-        stdout.printf (writer.to_string ());
+	    serializer.add_object (new VariantObject ());
+        stdout.printf (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);

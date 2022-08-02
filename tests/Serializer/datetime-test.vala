@@ -17,12 +17,12 @@ public void date_time_func () {
     };
 
     try {
-        var writer = new Valentine.ObjectWriter<DateObject> ();
+        var serializer = new Valentine.ObjectSerializer <DateObject> ();
         for (int i = 0; i < objects.length; i++) {
-            writer.add_object (objects[i]);
+            serializer.add_object (objects[i]);
         }
 
-        stdout.printf (writer.to_string ());
+        stdout.printf (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);
@@ -41,12 +41,12 @@ public void date_time_null_func () {
     };
 
     try {
-        var writer = new Valentine.ObjectWriter<DateObject> ();
+        var serializer = new Valentine.ObjectSerializer<DateObject> ();
         for (int i = 0; i < objects.length; i++) {
-            writer.add_object (objects[i]);
+            serializer.add_object (objects[i]);
         }
 
-        stdout.printf (writer.to_string ());
+        stdout.printf (serializer.to_string ());
     }
     catch (Error e) {
         critical (e.message);

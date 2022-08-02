@@ -1,9 +1,9 @@
 serializer_tests = [
   'adw_flap',
-  # 'basic_types',
-  # 'custom_types',
+  'basic_types',
+  'custom_types',
   'datetime',
-  # 'file',
+  'file',
   'flags',
   'string_array',
   'variant',
