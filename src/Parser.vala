@@ -79,7 +79,6 @@ namespace Valentine.Parser {
 
     internal inline string value_flags_to_string (Value val) {
         uint flags_value = val.get_flags ();
-        debug (flags_value.to_string ());
         return FlagsClass.to_string (val.type (), flags_value);
     }
 
