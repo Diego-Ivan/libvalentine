@@ -92,7 +92,4 @@ public struct Person {
 public class MyObject : Object {
     public Person person { get; set; }
     public bool hired { get; set; default = true; }
-
-    public MyObject () {
-    }
 }
