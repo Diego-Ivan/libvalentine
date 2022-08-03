@@ -187,7 +187,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
                 return true;
             }
         }
-        return false;
+        return type.is_enum () || type.is_flags ();
     }
 
     private int object_sort_func (DeserializerLine line_a, DeserializerLine line_b) {
