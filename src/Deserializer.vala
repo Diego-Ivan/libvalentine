@@ -23,9 +23,8 @@ namespace Valentine.Deserializer {
         Value val = Value (typeof(int));
         int result;
         if (int.try_parse (str, out result) || str != "(null)") {
-            val.set_int (result);
+            val = result;
         }
-
         return val;
     }
 
@@ -33,24 +32,35 @@ namespace Valentine.Deserializer {
         Value val = Value (typeof (bool));
         bool result;
         if (bool.try_parse (str, out result) || str != "(null)") {
-            val.set_boolean (result);
+            val = result;
         }
-
         return val;
     }
 
     internal inline Value value_string_from_string (string str) {
-        Value val = Value (typeof (string));
-        val.set_string (str);
-
+        Value val = Value (typeof(string));
+        if (str != "(null)") {
+            val = str;
+        }
         return val;
+    }
+
+    internal inline Value value_string_array_from_string (string str) {
+        if (str == "NULL") {
+            return Value (typeof(string[]));
+        }
+
+        string elements_str = str.replace ("[", "").replace ("]", "");
+        string[] strings = elements_str.split (", ");
+
+        return strings;
     }
 
     internal inline Value value_uchar_from_string (string str) {
         Value val = Value (typeof (uchar));
         uint result;
         if ((uint.try_parse (str, out result) && result >= 0 && result <= 255) || str != "(null)") {
-            val.set_uchar ((uchar) result);
+            val = (uchar) result;
         }
 
         return val;
@@ -64,10 +74,10 @@ namespace Valentine.Deserializer {
 
         int result;
         if (int.try_parse (str, out result) && result >= 0 && result <= 127) {
-            val.set_schar ((int8) result);
+            val = (int8) result;
         }
         else {
-            val.set_schar ((int8) str.get_char (0));
+            val = (int8) result;
         }
 
         return val;
@@ -79,7 +89,7 @@ namespace Valentine.Deserializer {
             return val;
         }
 
-        val.set_uint ((uint) str.get_char (0));
+        val = str.get_char (0);
         return val;
     }
 
@@ -87,7 +97,7 @@ namespace Valentine.Deserializer {
         Value val = Value (typeof(long));
         long result;
         if (long.try_parse (str, out result) || str != "(null)") {
-            val.set_long (result);
+            val = result;
         }
 
         return val;
@@ -97,7 +107,7 @@ namespace Valentine.Deserializer {
         Value val = Value (typeof(ulong));
         ulong result;
         if (ulong.try_parse (str, out result) || str != "(null)") {
-            val.set_ulong (result);
+            val = result;
         }
 
         return val;
@@ -117,7 +127,7 @@ namespace Valentine.Deserializer {
         Value val = Value (typeof(double));
         double result;
         if (double.try_parse (str, out result) || str != "(null)") {
-            val.set_double (result);
+            val = result;
         }
 
         return val;
@@ -126,8 +136,7 @@ namespace Valentine.Deserializer {
     internal inline Value value_variant_from_string (string str) {
         Value val = Value (typeof(Variant));
         try {
-            Variant res = Variant.parse (null, str);
-            val.set_variant (res);
+            val = Variant.parse (null, str);
         }
         catch (Error e) {
             return val;
@@ -142,9 +151,7 @@ namespace Valentine.Deserializer {
             return val;
         }
 
-        DateTime dt = new DateTime.from_iso8601 (str, new TimeZone.local ());
-        val.set_boxed (dt);
-
+        val = new DateTime.from_iso8601 (str, new TimeZone.local ());
         return val;
     }
 
@@ -154,9 +161,7 @@ namespace Valentine.Deserializer {
             return val;
         }
 
-        File file = File.new_for_path (str);
-        val.set_boxed (file);
-
+        val = File.new_for_path (str);
         return val;
     }
 
@@ -164,7 +169,7 @@ namespace Valentine.Deserializer {
         Value val = Value (typeof(uint));
         uint result;
         if (uint.try_parse (str, out result) || str != "(null)") {
-            val.set_uint (result);
+            val = result;
         }
 
         return val;

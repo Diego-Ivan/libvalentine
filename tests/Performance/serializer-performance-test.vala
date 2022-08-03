@@ -34,7 +34,7 @@ public void performance_func () {
     }
 
     try {
-        var writer = new Valentine.ObjectWriter<PerformanceObject> ();
+        var writer = new Valentine.ObjectSerializer<PerformanceObject> ();
         for (int i = 0; i < test_objects.length; i++) {
             writer.add_object (test_objects[i]);
         }
