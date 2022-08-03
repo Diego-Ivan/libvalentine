@@ -37,7 +37,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
 
         ObjectClass klass = (ObjectClass) type.class_ref ();
         foreach (ParamSpec spec in klass.list_properties ()) {
-            if (WRITABLE in spec.flags) {
+            if (WRITABLE in spec.flags && !(CONSTRUCT_ONLY in spec.flags)) {
                 writable_properties += Valentine.Property () {
                     name = spec.name,
                     type = spec.value_type
