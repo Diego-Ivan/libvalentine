@@ -16,5 +16,5 @@ foreach name : valentine_tests
 endforeach
 
 subdir ('Serializer')
-# subdir ('Deserializer')
+subdir ('Deserializer')
 # subdir ('Performance')

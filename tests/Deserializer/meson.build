@@ -1,11 +1,11 @@
 deserializer_tests = [
   'basic_types',
-  'custom_types',
-  'datetime',
-  'file',
-  'flags',
-  'string_array',
-  'variant',
+  # 'custom_types',
+  # 'datetime',
+  # 'file',
+  # 'flags',
+  # 'string_array',
+  # 'variant',
 ]
 
 test_dependencies = [
