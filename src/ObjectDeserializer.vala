@@ -53,6 +53,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         deserializable_types.add ({ typeof (double), Deserializer.value_double_from_string });
         deserializable_types.add ({ typeof (bool), Deserializer.value_boolean_from_string });
         deserializable_types.add ({ typeof (string), Deserializer.value_string_from_string });
+        deserializable_types.add ({ typeof (string[]), Deserializer.value_string_array_from_string });
         deserializable_types.add ({ typeof (long), Deserializer.value_long_from_string });
         deserializable_types.add ({ typeof (ulong), Deserializer.value_ulong_from_string });
         deserializable_types.add ({ typeof (uchar), Deserializer.value_uchar_from_string } );

@@ -45,6 +45,17 @@ namespace Valentine.Deserializer {
         return val;
     }
 
+    internal inline Value value_string_array_from_string (string str) {
+        if (str == "NULL") {
+            return Value (typeof(string[]));
+        }
+
+        string elements_str = str.replace ("[", "").replace ("]", "");
+        string[] strings = elements_str.split (", ");
+
+        return strings;
+    }
+
     internal inline Value value_uchar_from_string (string str) {
         Value val = Value (typeof (uchar));
         uint result;
