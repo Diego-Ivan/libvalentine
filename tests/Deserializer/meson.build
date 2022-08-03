@@ -4,8 +4,8 @@ deserializer_tests = [
   'datetime',
   'file',
   'flags',
-  # 'string_array',
-  # 'variant',
+  'string_array',
+  'variant',
 ]
 
 test_dependencies = [

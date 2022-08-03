@@ -57,7 +57,6 @@ public void array_only_required_null () {
 public void array_all_quoted_null () {
     try {
         var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
-        serializer.write_mode = ONLY_REQUIRED_QUOTES;
         serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
         serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
         serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
