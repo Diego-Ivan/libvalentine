@@ -1,7 +1,7 @@
 deserializer_tests = [
   'basic_types',
   'custom_types',
-  # 'datetime',
+  'datetime',
   # 'file',
   # 'flags',
   # 'string_array',
