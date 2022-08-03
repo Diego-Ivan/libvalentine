@@ -93,7 +93,7 @@ namespace Valentine.Parser {
             return "(null)";
         }
 
-        return dt.format ("%c");
+        return dt.format_iso8601 ();
     }
 
     internal inline string value_file_to_string (Value val) {
