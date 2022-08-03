@@ -3,7 +3,7 @@ deserializer_tests = [
   'custom_types',
   'datetime',
   'file',
-  # 'flags',
+  'flags',
   # 'string_array',
   # 'variant',
 ]
