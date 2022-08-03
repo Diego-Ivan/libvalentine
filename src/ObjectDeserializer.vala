@@ -63,6 +63,9 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         deserializable_types.add ({ typeof (File), Deserializer.value_file_from_string });
     }
 
+    // TODO: Remove errors thrown and handle them internally. IMO this would be a better API and sending
+    // criticals or warnings would be a little more comfortable to use.
+
     /**
      * The method that executes the deserialization from a given file.
      *
@@ -83,15 +86,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         }
 
         // Checking that we have deserializers for properties
-        Valentine.Property[] deserializable_properties = {};
-        foreach (Property p in writable_properties) {
-            if (supports_type (p.type)) {
-                deserializable_properties += p;
-                continue;
-            }
-            debug ("Deserializer not available for property %s", p.name);
-        }
-
+        Valentine.Property[] deserializable_properties = get_deserializable_properties ();
 
         FileInputStream stream = file.read ();
         DataInputStream dis = new DataInputStream (stream);
@@ -112,7 +107,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         ThreadPool<DeserializerLine<T>> thread_pool = new ThreadPool<DeserializerLine<T>>.with_owned_data ((line_deserializer) => {
             line_deserializer.deserialize_line (ref columns, ref deserializable_properties, deserializable_types);
             queue.push_sorted (line_deserializer, object_sort_func);
-        }, 4, false);
+        }, 6, false);
 
         for (int i = 0; i < lines.length; i++) {
             thread_pool.add (lines[i]);
@@ -128,6 +123,57 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         return array;
     }
 
+    public T[] deserialize_from_string (string str) {
+        T[] array = {};
+        Valentine.Property[] deserializable_properties = get_deserializable_properties ();
+
+        string[] lines = str.split ("\n");
+        string[] columns = lines[0].split (",");
+        string[] elements = lines[1:lines.length - 1];
+        int length = elements.length;
+
+        DeserializerLine<T>[] deserializer_lines = {};
+        for (int i = 0; i < length; i++) {
+            deserializer_lines += new DeserializerLine<T> (elements[i], i+1);
+        }
+
+        try {
+            var queue = new AsyncQueue<DeserializerLine<T>> ();
+            var thread_pool = new ThreadPool<DeserializerLine<T>>.with_owned_data ((line_deserializer) => {
+                line_deserializer.deserialize_line (ref columns, ref deserializable_properties, deserializable_types);
+                queue.push_sorted (line_deserializer, object_sort_func);
+            }, 6, false);
+
+            for (int i = 0; i < elements.length; i++) {
+                thread_pool.add (deserializer_lines[i]);
+            }
+
+            // TODO: I feel that having this while loop is quite hacky. I would prefer to have an alternative
+            while (queue.length () != length);
+
+            for (int i = 0; i < length; i++) {
+                array += queue.pop ().result;
+            }
+        }
+        catch (Error e) {
+            critical (e.message);
+        }
+
+        return array;
+    }
+
+    private Property[] get_deserializable_properties () {
+        Valentine.Property[] deserializable_properties = {};
+        foreach (Property p in writable_properties) {
+            if (supports_type (p.type)) {
+                deserializable_properties += p;
+                continue;
+            }
+            debug ("Deserializer not available for property %s", p.name);
+        }
+        return deserializable_properties;
+    }
+
     public void add_custom_parser_for_type (Type type, TypeDeserializationFunc func) {
         deserializable_types.add (Valentine.DeserializableType () {
             type = type,
@@ -141,7 +187,6 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
                 return true;
             }
         }
-
         return false;
     }
 
