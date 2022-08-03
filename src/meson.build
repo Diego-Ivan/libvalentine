@@ -9,7 +9,6 @@ sources = files([
   'AbstractWriter.vala',
   'enums.vala',
   'delegates.vala',
-  'ObjectWriter.vala',
   'ObjectDeserializer.vala',
   'ObjectSerializer.vala',
   'SerializerLine.vala',

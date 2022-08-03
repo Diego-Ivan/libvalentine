@@ -20,7 +20,7 @@
 
 namespace Valentine {
     /**
-     * Whether {@link Valentine.Doc} should quote all elements of the CSV file, or if it should only write
+     * Whether {@link Valentine.ObjectSerializer} should quote all elements of the CSV file, or if it should only write
      * quotes when it is strictly necessary.
      */
     [Version(since="0.1")]
@@ -79,12 +79,12 @@ namespace Valentine {
     }
 
     /**
-     * Thrown by {@link Valentine.ObjectWriter}
+     * Thrown by {@link Valentine.ObjectSerializer}
      */
     [Version(since="0.1")]
     public errordomain ObjectWriterError {
         /**
-         * Indicates that the {@link GLib.Type} given to {@link Valentine.ObjectWriter} is not an Object
+         * Indicates that the {@link GLib.Type} given to {@link Valentine.ObjectSerializer} is not an Object
          */
         NOT_OBJECT
     }
