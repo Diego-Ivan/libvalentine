@@ -4,7 +4,8 @@ performance_tests = [
 ]
 
 performance_dependencies = [
-  valentine_dep
+  valentine_dep,
+  adw_dep
 ]
 
 foreach name : performance_tests

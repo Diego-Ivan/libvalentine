@@ -10,7 +10,7 @@ serializer_tests = [
 ]
 
 test_dependencies = [
-  dependency('libadwaita-1'),
+  adw_dep,
   valentine_dep
 ]
 
