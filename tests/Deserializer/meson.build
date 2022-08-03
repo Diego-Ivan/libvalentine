@@ -9,7 +9,6 @@ deserializer_tests = [
 ]
 
 test_dependencies = [
-  dependency('libadwaita-1'),
   valentine_dep
 ]
 
