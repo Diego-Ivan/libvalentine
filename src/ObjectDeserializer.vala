@@ -164,7 +164,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
     }
 
     private int object_sort_func (DeserializerLine line_a, DeserializerLine line_b) {
-        return line_a.line_number - line_b.line_number;
+        return line_a.position - line_b.position;
     }
 }
 

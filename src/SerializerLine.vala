@@ -18,10 +18,11 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-internal class Valentine.SerializerLine : Valentine.AbstractLine<string> {
+internal sealed class Valentine.SerializerLine : Valentine.AbstractLine<string> {
     public Object object { get; private set; }
     public string separator { get; private set; }
     public WriteMode write_mode { get; private set; }
+    public override string result { get; protected set; default = ""; }
 
     public SerializerLine (Object obj, string s, WriteMode mode, int pos) {
         object = obj;

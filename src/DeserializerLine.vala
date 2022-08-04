@@ -18,12 +18,11 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-internal class Valentine.DeserializerLine<T> : Valentine.AbstractLine<Object> {
+internal sealed class Valentine.DeserializerLine<T> : Valentine.AbstractLine<Object> {
     public string line { get; private set; }
-    public int line_number { get; private set; }
     public DeserializerLine (string l, int n_line) {
         line = l;
-        line_number = n_line;
+        position = n_line;
     }
 
     public void deserialize_line (Gee.ArrayList<string> columns, Gee.ArrayList<Property?> deserializable_properties, Gee.LinkedList<DeserializableType?> deserializable_types) {
@@ -49,7 +48,7 @@ internal class Valentine.DeserializerLine<T> : Valentine.AbstractLine<Object> {
         }
 
         if (cells.length != columns.size) {
-            warning ("Error found in line %i: Number of Elements in line (%i) do not match number of properties (%i)", line_number, cells.length, columns.size);
+            warning ("Error found in line %i: Number of Elements in line (%i) do not match number of properties (%i)", position, cells.length, columns.size);
             result = obj;
         }
 
