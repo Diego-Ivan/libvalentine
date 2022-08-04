@@ -24,13 +24,23 @@ namespace Valentine {
         public Type type;
     }
 
-    private struct ParsableType {
-        public Type type;
-        public unowned TypeConversionFunc func;
+    private abstract class ParserType {
+        public Type type { get; protected set; }
     }
 
-    private struct DeserializableType {
-        public Type type;
-        public unowned TypeDeserializationFunc func;
+    private class SerializableType : ParserType {
+        public TypeConversionFunc func { get; private set; }
+        public SerializableType (Type t, TypeConversionFunc f) {
+            type = t;
+            func = f;
+        }
+    }
+
+    private class DeserializableType : ParserType {
+        public TypeDeserializationFunc func { get; private set; }
+        public DeserializableType (Type t, TypeDeserializationFunc f) {
+            type = t;
+            func = f;
+        }
     }
 }
