@@ -20,7 +20,7 @@
 
 namespace Valentine {
     /**
-     * UserConversionFunc allows to parse types that cannot be automatically parsed by Valentine.
+     * TypeSerializationFunc allows to parse types that cannot be automatically parsed by Valentine.
      *
      * The function gives a {@link GLib.Value} and expects that a string is returned. This strings must be
      * given by the developer at the end of the processing process
@@ -29,7 +29,7 @@ namespace Valentine {
      * @return The string that will be written into the CSV file
      */
     [Version (since="0.1")]
-    public delegate string TypeConversionFunc (Value val);
+    public delegate string TypeSerializationFunc (Value val);
 
     [Version (since="0.2")]
     public delegate Value TypeDeserializationFunc (string str);

@@ -29,18 +29,18 @@ namespace Valentine {
     }
 
     private class SerializableType : ParserType {
-        public TypeConversionFunc func { get; private set; }
-        public SerializableType (Type t, TypeConversionFunc f) {
+        public TypeSerializationFunc func { get; private set; }
+        public SerializableType (Type t, owned TypeSerializationFunc f) {
             type = t;
-            func = f;
+            func = (owned) f;
         }
     }
 
     private class DeserializableType : ParserType {
         public TypeDeserializationFunc func { get; private set; }
-        public DeserializableType (Type t, TypeDeserializationFunc f) {
+        public DeserializableType (Type t, owned TypeDeserializationFunc f) {
             type = t;
-            func = f;
+            func = (owned) f;
         }
     }
 }
