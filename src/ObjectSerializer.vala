@@ -47,7 +47,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
         ObjectClass klass = (ObjectClass) obj_type.class_ref ();
         foreach (ParamSpec spec in klass.list_properties ()) {
             if (READABLE in spec.flags) {
-                properties.add (Valentine.Property () {
+                properties.add (new Valentine.Property () {
                     name = spec.name,
                     type = spec.value_type,
                 });
@@ -136,8 +136,8 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
      * @param func The function that processes the type
      */
     [Version (since="0.2.5")]
-    public void add_custom_parser_for_type (Type type, TypeSerializationFunc func) {
-        parser_types.add (new SerializableType (type, func));
+    public void add_custom_parser_for_type (Type type, owned TypeSerializationFunc func) {
+        parser_types.add (new SerializableType (type, (owned) func));
     }
 
     private int lines_sort_func (SerializerLine a, SerializerLine b) {
