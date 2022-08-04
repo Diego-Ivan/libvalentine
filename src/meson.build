@@ -7,6 +7,7 @@ conf.set('API_VERSION', API_VERSION)
 
 sources = files([
   'AbstractWriter.vala',
+  'AbstractLine.vala',
   'enums.vala',
   'delegates.vala',
   'ObjectDeserializer.vala',
