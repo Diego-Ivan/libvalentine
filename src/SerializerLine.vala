@@ -35,7 +35,7 @@ internal class Valentine.SerializerLine<T> : Object {
         );
     }
 
-    public void serialize (Gee.LinkedList<Property?> serializable_properties, Gee.LinkedList<SerializableType> serializable_types) {
+    public void serialize (Gee.ArrayList<Property?> serializable_properties, Gee.LinkedList<SerializableType> serializable_types) {
         for (int i = 0; i < serializable_properties.size; i++) {
             Property property = serializable_properties.get (i);
             Value val = Value (property.type);
