@@ -110,7 +110,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
             }, 8, false);
 
             for (int i = 0; i < length; i++) {
-                processsing_thread_pool.add (new SerializerLine<T> (object_list.nth_data (i), separator, write_mode, i));
+                processsing_thread_pool.add (new SerializerLine (object_list.nth_data (i), separator, write_mode, i));
             }
 
             while (communication.length () != length);

@@ -1,6 +1,6 @@
 /* SerializerLine.vala
  *
- * Copyright $year Diego Iván <diegoivan.mae@gmail.com>
+ * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -18,21 +18,16 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-internal class Valentine.SerializerLine<T> : Object {
-    public Object object { get; construct; }
-    public string separator { get; construct; }
-    public WriteMode write_mode { get; construct; }
-    public int position { get; construct; }
-
-    public string result { get; private set; default = ""; }
+internal class Valentine.SerializerLine : Valentine.AbstractLine<string> {
+    public Object object { get; private set; }
+    public string separator { get; private set; }
+    public WriteMode write_mode { get; private set; }
 
     public SerializerLine (Object obj, string s, WriteMode mode, int pos) {
-        Object (
-            object: obj,
-            separator: s,
-            write_mode: mode,
-            position: pos
-        );
+        object = obj;
+        separator = s;
+        write_mode = mode;
+        position = pos;
     }
 
     public void serialize (Gee.ArrayList<Property?> serializable_properties, Gee.LinkedList<SerializableType> serializable_types) {
