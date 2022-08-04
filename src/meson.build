@@ -20,7 +20,7 @@ sources = files([
   'TypeParser.vala',
   ])
 
-libvalentine = library('libvalentine-' + API_VERSION,
+libvalentine = library('valentine-' + API_VERSION,
   sources,
   vala_header: 'libvalentine.h',
   vala_vapi: 'libvalentine-' + API_VERSION + '.vapi',

@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-internal abstract class Valentine.AbstractLine<G> {
+public abstract class Valentine.AbstractLine<G> {
     public virtual G result { get; protected set; }
     public int position { get; protected set; }
 }

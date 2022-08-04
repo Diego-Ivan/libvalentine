@@ -29,11 +29,8 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
     internal Gee.LinkedList<Property?> properties { get; set; default = new Gee.LinkedList<Property?> (); }
     internal Gee.LinkedList<ParserType> parser_types { get; set; default = new Gee.LinkedList<DeserializableType> (); }
 
-    public ObjectDeserializer () throws Error {
+    public ObjectDeserializer () requires (typeof(T).is_object ()) {
         Type type = typeof (T);
-        if (!type.is_object ()) {
-            throw new ObjectWriterError.NOT_OBJECT ("The type given to the serializer is not an Object");
-        }
 
         ObjectClass klass = (ObjectClass) type.class_ref ();
         foreach (ParamSpec spec in klass.list_properties ()) {
@@ -64,9 +61,6 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         parser_types.add (new DeserializableType (typeof (File), Deserializer.value_file_from_string));
     }
 
-    // TODO: Remove errors thrown and handle them internally. IMO this would be a better API and sending
-    // criticals or warnings would be a little more comfortable to use.
-
     /**
      * The method that executes the deserialization from a given file.
      *
@@ -75,53 +69,63 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
      * @param path The path to the CSV file
      * @return An array of objects
      */
-    public T[] deserialize_from_file (string path) throws Error {
+    public T[] deserialize_from_file (string path) requires (typeof(T).is_object ()) {
         File file = File.new_for_path (path);
         if (!file.query_exists ()) {
-            throw new DeserializerError.FILE_NOT_EXISTS ("File for path %s does not exist", path);
+            critical ("File does not exist!");
+            return {};
         }
 
-        FileInfo info = file.query_info ("standard::*", NOFOLLOW_SYMLINKS);
-        if (info.get_content_type () != "text/csv") {
-            throw new DeserializerError.FILE_NOT_CSV ("The file given is not a CSV file");
+        try {
+            FileInfo info = file.query_info ("standard::*", NOFOLLOW_SYMLINKS);
+            if (info.get_content_type () != "text/csv") {
+                critical ("File %s is not a CSV file", path);
+            }
+        }
+        catch (Error e) {
+            error (e.message);
         }
 
-        FileInputStream stream = file.read ();
-        DataInputStream dis = new DataInputStream (stream);
+        try {
+            FileInputStream stream = file.read ();
+            DataInputStream dis = new DataInputStream (stream);
 
-        // Reading Columns
-        string line = dis.read_line ();
-        var column_array = new Gee.ArrayList<string>.wrap (line.split (","));
+            // Reading Columns
+            string line = dis.read_line ();
+            var column_array = new Gee.ArrayList<string>.wrap (line.split (","));
 
-        int l = 0; // Line counter
-        DeserializerLine<T>[] lines = {};
-        while ((line = dis.read_line ()) != null) {
-            l++;
-            lines += new DeserializerLine<T> (line, l);
+            int l = 0; // Line counter
+            DeserializerLine<T>[] lines = {};
+            while ((line = dis.read_line ()) != null) {
+                l++;
+                lines += new DeserializerLine<T> (line, l);
+            }
+            dis.close ();
+            var queue = new AsyncQueue<DeserializerLine<T>> ();
+            ThreadPool<DeserializerLine<T>> thread_pool = new ThreadPool<DeserializerLine<T>>.with_owned_data ((line_deserializer) => {
+                line_deserializer.deserialize_line (column_array, get_parsable_properties (), (Gee.LinkedList<DeserializableType>) parser_types);
+                queue.push_sorted (line_deserializer, object_sort_func);
+            }, 6, false);
+
+            for (int i = 0; i < lines.length; i++) {
+                thread_pool.add (lines[i]);
+            }
+
+            while (queue.length () != l);
+
+            T[] array = {};
+            for (int i= 0; i < l; i++) {
+                array += queue.pop ().result;
+            }
+
+            return array;
         }
-        dis.close ();
-
-        var queue = new AsyncQueue<DeserializerLine<T>> ();
-        ThreadPool<DeserializerLine<T>> thread_pool = new ThreadPool<DeserializerLine<T>>.with_owned_data ((line_deserializer) => {
-            line_deserializer.deserialize_line (column_array, get_parsable_properties (), (Gee.LinkedList<DeserializableType>) parser_types);
-            queue.push_sorted (line_deserializer, object_sort_func);
-        }, 6, false);
-
-        for (int i = 0; i < lines.length; i++) {
-            thread_pool.add (lines[i]);
+        catch (Error e) {
+            error (e.message);
         }
-
-        while (queue.length () != l);
-
-        T[] array = {};
-        for (int i= 0; i < l; i++) {
-            array += queue.pop ().result;
-        }
-
-        return array;
     }
 
-    public T[] deserialize_from_string (string str) {
+    public T[] deserialize_from_string (string str) requires (typeof(T).is_object ()) {
         T[] array = {};
 
         string[] lines = str.split ("\n");
@@ -159,7 +163,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         return array;
     }
 
-    public void add_custom_parser_for_type (Type type, owned TypeDeserializationFunc func) {
+    public void add_custom_parser_for_type (Type type, owned TypeDeserializationFunc func) requires (typeof(T).is_object ()) {
         parser_types.add (new DeserializableType (type, (owned) func));
     }
 
