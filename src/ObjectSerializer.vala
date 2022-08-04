@@ -30,7 +30,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
     private Valentine.Property[] readable_properties = {};
     private List<Object> object_list = new List<Object> ();
 
-    private Gee.LinkedList<ParsableType?> parsable_types = new Gee.LinkedList<ParsableType?> ();
+    private Gee.LinkedList<SerializableType> parsable_types = new Gee.LinkedList<SerializableType> ();
 
     /**
      * Constructs a new {@link ObjectSerializer} with the Type given
@@ -56,20 +56,20 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
     }
 
     construct {
-        parsable_types.add ( {typeof (string), Parser.value_string_to_string} );
-        parsable_types.add ( {typeof (int), Parser.value_int_to_string} );
-        parsable_types.add ( {typeof (uint), Parser.value_uint_to_string} );
-        parsable_types.add ( {typeof (float), Parser.value_float_to_string} );
-        parsable_types.add ( {typeof (double), Parser.value_double_to_string} );
-        parsable_types.add ( {typeof (long), Parser.value_long_to_string} );
-        parsable_types.add ( {typeof (ulong), Parser.value_ulong_to_string} );
-        parsable_types.add ( {typeof (bool), Parser.value_boolean_to_string} );
-        parsable_types.add ( {typeof (char), Parser.value_char_to_string} );
-        parsable_types.add ( {typeof (uchar), Parser.value_uchar_to_string} );
-        parsable_types.add ( {typeof (string[]), Parser.value_string_array_to_string} );
-        parsable_types.add ( {typeof (Variant), Parser.value_variant_to_string} );
-        parsable_types.add ( {typeof (File), Parser.value_file_to_string} );
-        parsable_types.add ( {typeof (DateTime), Parser.value_datetime_to_string} );
+        parsable_types.add (new SerializableType (typeof (string), Parser.value_string_to_string));
+        parsable_types.add (new SerializableType (typeof (int), Parser.value_int_to_string));
+        parsable_types.add (new SerializableType (typeof (uint), Parser.value_uint_to_string));
+        parsable_types.add (new SerializableType (typeof (float), Parser.value_float_to_string));
+        parsable_types.add (new SerializableType (typeof (double), Parser.value_double_to_string));
+        parsable_types.add (new SerializableType (typeof (long), Parser.value_long_to_string));
+        parsable_types.add (new SerializableType (typeof (ulong), Parser.value_ulong_to_string));
+        parsable_types.add (new SerializableType (typeof (bool), Parser.value_boolean_to_string));
+        parsable_types.add (new SerializableType (typeof (char), Parser.value_char_to_string));
+        parsable_types.add (new SerializableType (typeof (uchar), Parser.value_uchar_to_string));
+        parsable_types.add (new SerializableType (typeof (string[]), Parser.value_string_array_to_string));
+        parsable_types.add (new SerializableType (typeof (Variant), Parser.value_variant_to_string));
+        parsable_types.add (new SerializableType (typeof (File), Parser.value_file_to_string));
+        parsable_types.add (new SerializableType (typeof (DateTime), Parser.value_datetime_to_string));
     }
 
     /**
@@ -145,12 +145,12 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
      * @param func The function that processes the type
      */
     [Version (since="0.2.5")]
-    public void add_custom_parser_for_type (Type type, TypeConversionFunc func) {
-        parsable_types.add ({type, func});
+    public void add_custom_parser_for_type (Type type, TypeSerializationFunc func) {
+        parsable_types.add (new SerializableType (type, func));
     }
 
     public bool supports_type (Type type) {
-        foreach (ParsableType t in parsable_types) {
+        foreach (SerializableType t in parsable_types) {
             if (t.type == type) {
                 return true;
             }

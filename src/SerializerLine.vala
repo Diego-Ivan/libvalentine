@@ -35,7 +35,7 @@ internal class Valentine.SerializerLine<T> : Object {
         );
     }
 
-    public void serialize (Gee.LinkedList<Property?> serializable_properties, Gee.LinkedList<ParsableType?> serializable_types) {
+    public void serialize (Gee.LinkedList<Property?> serializable_properties, Gee.LinkedList<SerializableType> serializable_types) {
         for (int i = 0; i < serializable_properties.size; i++) {
             Property property = serializable_properties.get (i);
             Value val = Value (property.type);
@@ -44,7 +44,7 @@ internal class Valentine.SerializerLine<T> : Object {
 
             bool found = false;
             string s = "";
-            foreach (ParsableType type in serializable_types) {
+            foreach (SerializableType type in serializable_types) {
                 if (type.type == property.type) {
                     s = type.func (val);
                     found = true;
