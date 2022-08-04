@@ -33,25 +33,15 @@ public static int main (string[] args) {
 }
 
 public void non_null_func () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
-        BasicTypesClass[] array = deserializer.deserialize_from_string (NON_NULL_CSV);
-        print ("%i objects were deserialized\n", array.length);
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    var deserializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
+    var array = deserializer.deserialize_from_string (NON_NULL_CSV);
+    print ("%u objects were deserialized\n", array.length ());
 }
 
 public void null_func () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
-        BasicTypesClass[] array = deserializer.deserialize_from_string (NULL_CSV);
-        print ("%i objects were deserialized\n", array.length);
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    var deserializer = new Valentine.ObjectDeserializer<BasicTypesClass> ();
+    var array = deserializer.deserialize_from_string (NULL_CSV);
+    print ("%u objects were deserialized\n", array.length ());
 }
 
 public class BasicTypesClass : Object {

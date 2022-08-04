@@ -16,17 +16,12 @@ public void date_time_func () {
         new DateObject ("Octavio") { date = new DateTime.now_local () },
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer <DateObject> ();
-        for (int i = 0; i < objects.length; i++) {
-            serializer.add_object (objects[i]);
-        }
+    var serializer = new Valentine.ObjectSerializer <DateObject> ();
+    for (int i = 0; i < objects.length; i++) {
+        serializer.add_object (objects[i]);
+    }
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public void date_time_null_func () {
@@ -40,17 +35,12 @@ public void date_time_null_func () {
         new DateObject ("Octavio") { date = new DateTime.now_local () },
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer<DateObject> ();
-        for (int i = 0; i < objects.length; i++) {
-            serializer.add_object (objects[i]);
-        }
+    var serializer = new Valentine.ObjectSerializer<DateObject> ();
+    for (int i = 0; i < objects.length; i++) {
+        serializer.add_object (objects[i]);
+    }
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public class DateObject : Object {

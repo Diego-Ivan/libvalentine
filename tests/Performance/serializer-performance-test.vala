@@ -18,31 +18,21 @@ public void performance_func () {
     Adw.init ();
 
     foreach (var obj in test_objects) {
-        try {
-            var writer = new Valentine.ObjectSerializer<Adw.Flap> ();
-            for (int i = 0; i < obj.n_objects; i++) {
-                writer.add_object (new Adw.Flap ());
-            }
+        var writer = new Valentine.ObjectSerializer<Adw.Flap> ();
+        for (int i = 0; i < obj.n_objects; i++) {
+            writer.add_object (new Adw.Flap ());
+        }
 
-            Test.timer_start ();
-            writer.to_string ();
-            obj.time_taken = Test.timer_elapsed ();
-        }
-        catch (Error e) {
-            critical (e.message);
-        }
+        Test.timer_start ();
+        writer.to_string ();
+        obj.time_taken = Test.timer_elapsed ();
     }
 
-    try {
-        var writer = new Valentine.ObjectSerializer<PerformanceObject> ();
-        for (int i = 0; i < test_objects.length; i++) {
-            writer.add_object (test_objects[i]);
-        }
-        stdout.printf (writer.to_string ());
+    var writer = new Valentine.ObjectSerializer<PerformanceObject> ();
+    for (int i = 0; i < test_objects.length; i++) {
+        writer.add_object (test_objects[i]);
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (writer.to_string ());
 }
 
 public class PerformanceObject : Object {

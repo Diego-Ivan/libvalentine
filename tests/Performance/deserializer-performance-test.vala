@@ -13,69 +13,32 @@ public void performance_func () {
         new PerformanceObject (3000),
     };
 
-     Adw.init ();
+    Valentine.ObjectSerializer<Adw.Flap>[] serializers = {};
 
-     // TODO: we're declaring variables here to avoid double frees that are generated in C code
-     // I'm really not sure why this is happening, maybe generics? I don't know, I'll rewrite this
-     // when I remove generics from the API
-     Valentine.ObjectSerializer<Adw.Flap> serializer;
-     Valentine.ObjectDeserializer<Adw.Flap> deserializer;
-     Adw.Flap[] array;
-     for (int i = 0; i < test_objects.length; i++) {
-         var obj = test_objects[i];
-         string csv = "";
-         try {
-             serializer = new Valentine.ObjectSerializer<Adw.Flap> ();
-             for (int j = 0; j < obj.n_objects; j++) {
-                 serializer.add_object (new Adw.Flap ());
-             }
-             csv = serializer.to_string ();
-         }
-         catch (Error e) {
-             critical (e.message);
-         }
+    Adw.init ();
 
-         try {
-             deserializer = new Valentine.ObjectDeserializer<Adw.Flap> ();
-             Test.timer_start ();
-             array = deserializer.deserialize_from_string (csv);
-             obj.time_taken = Test.timer_elapsed ();
-             debug ("Reached here");
-         }
-         catch (Error e) {
-             critical (e.message);
-         }
-
-     }
-
-    // foreach (PerformanceObject obj in test_objects) {
-    //     try {
-    //         var writer = new Valentine.ObjectSerializer<Adw.Flap> ();
-    //         for (int i = 0; i < obj.n_objects; i++) {
-    //             writer.add_object (new Adw.Flap ());
-    //         }
-
-    //         var deserializer = new Valentine.ObjectDeserializer<Adw.Flap> ();
-    //         Test.timer_start ();
-    //         Adw.Flap[] array = deserializer.deserialize_from_string (writer.to_string ());
-    //         message (array.length.to_string ());
-    //         obj.time_taken = Test.timer_elapsed ();
-    //     }
-    //     catch (Error e) {
-    //         critical (e.message);
-    //     }
-    // }
-
-    try {
-        var writer = new Valentine.ObjectSerializer<PerformanceObject> ();
-        for (int i = 0; i < test_objects.length; i++) {
-            writer.add_object (test_objects[i]);
+    foreach (var obj in test_objects) {
+        var writer = new Valentine.ObjectSerializer<Adw.Flap> ();
+        for (int i = 0; i < obj.n_objects; i++) {
+            writer.add_object (new Adw.Flap ());
         }
-        stdout.printf (writer.to_string ());
+
+        serializers += writer;
     }
-    catch (Error e) {
-        critical (e.message);
+
+    for (int i = 0; i < serializers.length; i++) {
+        var deserializer = new Valentine.ObjectDeserializer<Adw.Flap> ();
+        debug ("Got here");
+        Test.timer_start ();
+        deserializer.deserialize_from_string (serializers[i].to_string ());
+        test_objects[i].time_taken = Test.timer_elapsed ();
     }
+
+    var writer = new Valentine.ObjectSerializer<PerformanceObject> ();
+    for (int i = 0; i < test_objects.length; i++) {
+        writer.add_object (test_objects[i]);
+    }
+    stdout.printf (writer.to_string ());
 }
 
 public class PerformanceObject : Object {

@@ -69,11 +69,11 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
      * @param path The path to the CSV file
      * @return An array of objects
      */
-    public T[] deserialize_from_file (string path) requires (typeof(T).is_object ()) {
+    public List<T> deserialize_from_file (string path) requires (typeof(T).is_object ()) {
         File file = File.new_for_path (path);
         if (!file.query_exists ()) {
             critical ("File does not exist!");
-            return {};
+            return new List<T> ();
         }
 
         try {
@@ -113,20 +113,20 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
 
             while (queue.length () != l);
 
-            T[] array = {};
+            var list = new List<T> ();
             for (int i= 0; i < l; i++) {
-                array += queue.pop ().result;
+                list.append (queue.pop ().result);
             }
 
-            return array;
+            return list;
         }
         catch (Error e) {
             error (e.message);
         }
     }
 
-    public T[] deserialize_from_string (string str) requires (typeof(T).is_object ()) {
-        T[] array = {};
+    public List<T> deserialize_from_string (string str) requires (typeof(T).is_object ()) {
+        var list = new List<T> ();
 
         string[] lines = str.split ("\n");
         var columns = new Gee.ArrayList<string>.wrap (lines[0].split(","));
@@ -153,14 +153,14 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
             while (queue.length () != length);
 
             for (int i = 0; i < length; i++) {
-                array += queue.pop ().result;
+                list.append (queue.pop ().result);
             }
         }
         catch (Error e) {
             critical (e.message);
         }
 
-        return array;
+        return list;
     }
 
     public void add_custom_parser_for_type (Type type, owned TypeDeserializationFunc func) requires (typeof(T).is_object ()) {

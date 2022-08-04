@@ -26,17 +26,12 @@ public void flag_enum_test_func () {
         new ExampleClass ()
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer<ExampleClass> ();
-        for (int i = 0; i < objects.length; i++) {
-            serializer.add_object (objects[i]);
-        }
+    var serializer = new Valentine.ObjectSerializer<ExampleClass> ();
+    for (int i = 0; i < objects.length; i++) {
+        serializer.add_object (objects[i]);
+    }
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public void enum_test_func () {
@@ -46,17 +41,12 @@ public void enum_test_func () {
         new EnumKlass ()
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer<EnumKlass> ();
-        for (int i = 0; i < objects.length; i++) {
-            serializer.add_object (objects[i]);
-        }
+    var serializer = new Valentine.ObjectSerializer<EnumKlass> ();
+    for (int i = 0; i < objects.length; i++) {
+        serializer.add_object (objects[i]);
+    }
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public void flags_test_func () {
@@ -66,17 +56,12 @@ public void flags_test_func () {
         new FlagKlass ()
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer<FlagKlass> ();
-        for (int i = 0; i < objects.length; i++) {
-            serializer.add_object (objects[i]);
-        }
+    var serializer = new Valentine.ObjectSerializer<FlagKlass> ();
+    for (int i = 0; i < objects.length; i++) {
+        serializer.add_object (objects[i]);
+    }
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public class EnumKlass : Object {

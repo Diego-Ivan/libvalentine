@@ -16,18 +16,13 @@ public void custom_non_null () {
         { "Luna", 25 },
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer<MyObject> ();
-        for (int i = 0; i < people.length; i++) {
-            serializer.add_object (new MyObject (){ person = people[i] });
-        }
+    var serializer = new Valentine.ObjectSerializer<MyObject> ();
+    for (int i = 0; i < people.length; i++) {
+        serializer.add_object (new MyObject (){ person = people[i] });
+    }
 
-        serializer.add_custom_parser_for_type (typeof (Person), person_serialization_func);
-        print (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    serializer.add_custom_parser_for_type (typeof (Person), person_serialization_func);
+    print (serializer.to_string ());
 }
 
 public void custom_null () {
@@ -39,19 +34,14 @@ public void custom_null () {
         { "Luna", 25 },
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer<MyObject> ();
-        for (int i = 0; i < people.length; i++) {
-            serializer.add_object (new MyObject (){ person = people[i] });
-        }
-        serializer.add_object (new MyObject ());
+    var serializer = new Valentine.ObjectSerializer<MyObject> ();
+    for (int i = 0; i < people.length; i++) {
+        serializer.add_object (new MyObject (){ person = people[i] });
+    }
+    serializer.add_object (new MyObject ());
 
-        serializer.add_custom_parser_for_type (typeof (Person), person_serialization_func);
-        print (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    serializer.add_custom_parser_for_type (typeof (Person), person_serialization_func);
+    print (serializer.to_string ());
 }
 
 public void type_unsupported () {
@@ -63,17 +53,12 @@ public void type_unsupported () {
         { "Luna", 25 },
     };
 
-    try {
-        var serializer = new Valentine.ObjectSerializer<MyObject> ();
-        for (int i = 0; i < people.length; i++) {
-            serializer.add_object (new MyObject (){ person = people[i] });
-        }
+    var serializer = new Valentine.ObjectSerializer<MyObject> ();
+    for (int i = 0; i < people.length; i++) {
+        serializer.add_object (new MyObject (){ person = people[i] });
+    }
 
-        print (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print (serializer.to_string ());
 }
 
 public string person_serialization_func (Value val) {

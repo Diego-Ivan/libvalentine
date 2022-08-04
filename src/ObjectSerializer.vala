@@ -38,11 +38,8 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
      * For this implementation, the type must be a {@link GLib.Object} or a derivate. Otherwise, it will
      * throw an Error
      */
-    public ObjectSerializer () throws Error {
+    public ObjectSerializer () requires (typeof(T).is_object ()) {
         Type obj_type = typeof (T);
-        if (!obj_type.is_object ()) {
-            throw new ObjectWriterError.NOT_OBJECT ("Type given is not an Object");
-        }
 
         ObjectClass klass = (ObjectClass) obj_type.class_ref ();
         foreach (ParamSpec spec in klass.list_properties ()) {
@@ -78,12 +75,12 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
      * This object will be processed later to create the CSV file based on the type information
      */
     [Version (since="0.2.5")]
-    public void add_object (T obj) {
+    public void add_object (T obj) requires (typeof(T).is_object ()) {
         object_list.append ((Object) obj);
     }
 
     [Version (since="0.2.5")]
-    public override string to_string () {
+    public override string to_string () requires (typeof(T).is_object ()) {
         string separator = separator_mode.get_separator ();
         string output = "";
 
@@ -136,7 +133,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
      * @param func The function that processes the type
      */
     [Version (since="0.2.5")]
-    public void add_custom_parser_for_type (Type type, owned TypeSerializationFunc func) {
+    public void add_custom_parser_for_type (Type type, owned TypeSerializationFunc func) requires (typeof(T).is_object ()) {
         parser_types.add (new SerializableType (type, (owned) func));
     }
 

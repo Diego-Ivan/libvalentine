@@ -9,65 +9,45 @@ public static int main (string[] args) {
 }
 
 public void array_only_required_func () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
-        serializer.write_mode = ONLY_REQUIRED_QUOTES;
-        serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
-        serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
-        serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
+    var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
+    serializer.write_mode = ONLY_REQUIRED_QUOTES;
+    serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
+    serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
+    serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public void array_all_quoted () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
-        serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
-        serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
-        serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
+    var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
+    serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
+    serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
+    serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public void array_only_required_null () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
-        serializer.write_mode = ONLY_REQUIRED_QUOTES;
-        serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
-        serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
-        serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
-        serializer.add_object (new ArrayObject () {name = "null"});
-        serializer.add_object (new ArrayObject ());
+    var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
+    serializer.write_mode = ONLY_REQUIRED_QUOTES;
+    serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
+    serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
+    serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
+    serializer.add_object (new ArrayObject () {name = "null"});
+    serializer.add_object (new ArrayObject ());
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public void array_all_quoted_null () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
-        serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
-        serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
-        serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
-        serializer.add_object (new ArrayObject () {name = "null"});
-        serializer.add_object (new ArrayObject ());
+    var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
+    serializer.add_object (new ArrayObject () { name = "saludos", array = {"hola", "adios"}});
+    serializer.add_object (new ArrayObject () { name = "numeros", array = {"uno", "dos", "tres"} });
+    serializer.add_object (new ArrayObject () { name = "numbers", array = {"one", "two", "three"} });
+    serializer.add_object (new ArrayObject () {name = "null"});
+    serializer.add_object (new ArrayObject ());
 
-        stdout.printf (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public class ArrayObject : Object {

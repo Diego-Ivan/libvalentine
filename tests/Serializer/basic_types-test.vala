@@ -7,29 +7,19 @@ public static int main (string[] args) {
 }
 
 public void non_null_test () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<BasicTypesClass> ();
-        for (int i = 0; i < 10; i++) {
-            serializer.add_object (new BasicTypesClass () { str = "string", ch = 'c', uc = 'u', integer = i, uinteger = i+3, longint = long.MAX, longuint = ulong.MAX, db = 1.2413424, fl = (float) 1.243 });
-        }
-        print (serializer.to_string ());
+    var serializer = new Valentine.ObjectSerializer<BasicTypesClass> ();
+    for (int i = 0; i < 10; i++) {
+        serializer.add_object (new BasicTypesClass () { str = "string", ch = 'c', uc = 'u', integer = i, uinteger = i+3, longint = long.MAX, longuint = ulong.MAX, db = 1.2413424, fl = (float) 1.243 });
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print (serializer.to_string ());
 }
 
 public void null_test () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<BasicTypesClass> ();
-        for (int i= 0; i < 10; i++) {
-            serializer.add_object (new BasicTypesClass ());
-        }
-        print (serializer.to_string ());
+    var serializer = new Valentine.ObjectSerializer<BasicTypesClass> ();
+    for (int i= 0; i < 10; i++) {
+        serializer.add_object (new BasicTypesClass ());
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print (serializer.to_string ());
 }
 
 public class BasicTypesClass : Object {
