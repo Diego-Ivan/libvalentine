@@ -20,5 +20,27 @@
 
 [Version (since="0.2")]
 public interface Valentine.TypeParser : Object {
-    public abstract bool supports_type (Type type);
+    internal abstract Gee.LinkedList<Property?> properties { get; set; default = new Gee.LinkedList<Property?> (); }
+    internal abstract Gee.LinkedList<ParserType> parser_types { get; set; default = new Gee.LinkedList<ParserType> (); }
+
+    internal virtual Gee.ArrayList<Property?> get_parsable_properties () {
+        var parsable_types = new Gee.ArrayList<Property?> ();
+        foreach (Property property in properties) {
+            if (supports_type (property.type)) {
+                parsable_types.add (property);
+                continue;
+            }
+        }
+
+        return parsable_types;
+    }
+
+    public virtual bool supports_type (Type type) {
+        foreach (ParserType t in parser_types) {
+            if (t.type == type) {
+                return true;
+            }
+        }
+        return type.is_enum () || type.is_flags ();
+    }
 }

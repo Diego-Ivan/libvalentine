@@ -19,18 +19,28 @@
  */
 
 namespace Valentine {
-    private struct Property {
+    private class Property {
         public string name;
         public Type type;
     }
 
-    private struct ParsableType {
+    private abstract class ParserType {
         public Type type;
-        public unowned TypeConversionFunc func;
     }
 
-    private struct DeserializableType {
-        public Type type;
-        public unowned TypeDeserializationFunc func;
+    private class SerializableType : ParserType {
+        public TypeSerializationFunc func;
+        public SerializableType (Type t, owned TypeSerializationFunc f) {
+            type = t;
+            func = (owned) f;
+        }
+    }
+
+    private class DeserializableType : ParserType {
+        public TypeDeserializationFunc func;
+        public DeserializableType (Type t, owned TypeDeserializationFunc f) {
+            type = t;
+            func = (owned) f;
+        }
     }
 }

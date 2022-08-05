@@ -24,45 +24,35 @@ public static int main (string[] args) {
 }
 
 public void non_null_func () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<MyObject> ();
-        deserializer.add_custom_parser_for_type (typeof (Person), serialization_func);
-        MyObject[] array = deserializer.deserialize_from_string (NON_NULL_CSV);
+    var deserializer = new Valentine.ObjectDeserializer<MyObject> ();
+    deserializer.add_custom_parser_for_type (typeof (Person), serialization_func);
+    var array = deserializer.deserialize_from_string (NON_NULL_CSV);
 
-        print ("Objects deserialized: \n");
+    print ("Objects deserialized: \n");
 
-        var serializer = new Valentine.ObjectSerializer<MyObject> ();
-        serializer.add_custom_parser_for_type (typeof (Person), conversion_func);
+    var serializer = new Valentine.ObjectSerializer<MyObject> ();
+    serializer.add_custom_parser_for_type (typeof (Person), conversion_func);
 
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
-        print (serializer.to_string ());
+    foreach (var obj in array) {
+        serializer.add_object (obj);
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print (serializer.to_string ());
 }
 
 public void null_func () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<MyObject> ();
-        deserializer.add_custom_parser_for_type (typeof (Person), serialization_func);
-        MyObject[] array = deserializer.deserialize_from_string (NULL_CSV);
+    var deserializer = new Valentine.ObjectDeserializer<MyObject> ();
+    deserializer.add_custom_parser_for_type (typeof (Person), serialization_func);
+    var array = deserializer.deserialize_from_string (NULL_CSV);
 
-        print ("Objects deserialized: \n");
+    print ("Objects deserialized: \n");
 
-        var serializer = new Valentine.ObjectSerializer<MyObject> ();
-        serializer.add_custom_parser_for_type (typeof (Person), conversion_func);
+    var serializer = new Valentine.ObjectSerializer<MyObject> ();
+    serializer.add_custom_parser_for_type (typeof (Person), conversion_func);
 
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
-        print (serializer.to_string ());
+    foreach (var obj in array) {
+        serializer.add_object (obj);
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print (serializer.to_string ());
 }
 
 public string conversion_func (Value val) {

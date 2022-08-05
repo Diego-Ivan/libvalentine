@@ -21,37 +21,27 @@ public static int main (string[] args) {
 }
 
 public void non_null_func () {
-    try{
-        var deserializer = new Valentine.ObjectDeserializer<ArrayObject> ();
-        ArrayObject[] array = deserializer.deserialize_from_string (non_null);
+    var deserializer = new Valentine.ObjectDeserializer<ArrayObject> ();
+    var array = deserializer.deserialize_from_string (non_null);
 
-        var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
+    var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
+    foreach (var obj in array) {
+        serializer.add_object (obj);
+    }
 
-        print ("Result: \n%s", serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print ("Result: \n%s", serializer.to_string ());
 }
 
 public void null_func () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<ArrayObject> ();
-        ArrayObject[] array = deserializer.deserialize_from_string (null_csv);
+    var deserializer = new Valentine.ObjectDeserializer<ArrayObject> ();
+    var array = deserializer.deserialize_from_string (null_csv);
 
-        var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
+    var serializer = new Valentine.ObjectSerializer<ArrayObject> ();
+    foreach (var obj in array) {
+        serializer.add_object (obj);
+    }
 
-        print ("Result: \n%s", serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print ("Result: \n%s", serializer.to_string ());
 }
 
 public class ArrayObject : Object {

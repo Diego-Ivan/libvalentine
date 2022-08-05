@@ -12,17 +12,12 @@ public void file_test_func () {
         new FileObject ()
     };
 
-    try {
-        var writer = new Valentine.ObjectSerializer<FileObject> ();
-        for (int i = 0; i < objects.length; i++) {
-            writer.add_object (objects[i]);
-        }
+    var writer = new Valentine.ObjectSerializer<FileObject> ();
+    for (int i = 0; i < objects.length; i++) {
+        writer.add_object (objects[i]);
+    }
 
-        stdout.printf (writer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (writer.to_string ());
 }
 
 public class FileObject : Object {

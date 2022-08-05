@@ -7,49 +7,39 @@ public static int main (string[] args) {
 }
 
 public void variant_test_func () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<VariantObject> ();
-	    for (int i = 0; i < 10; i++) {
-            VariantBuilder builder = new VariantBuilder (new VariantType ("a{sv}"));
-	        builder.add ("{sv}", "str1", new Variant.string ("str"));
-	        builder.add ("{sv}", "str2", new Variant.int16 (10));
-	        builder.add ("{sv}", "str4", new Variant.int32 (10));
-	        builder.add ("{sv}", "str5", new Variant.int64 (10));
+    var serializer = new Valentine.ObjectSerializer<VariantObject> ();
+    for (int i = 0; i < 10; i++) {
+        VariantBuilder builder = new VariantBuilder (new VariantType ("a{sv}"));
+        builder.add ("{sv}", "str1", new Variant.string ("str"));
+        builder.add ("{sv}", "str2", new Variant.int16 (10));
+        builder.add ("{sv}", "str4", new Variant.int32 (10));
+        builder.add ("{sv}", "str5", new Variant.int64 (10));
 
-	        serializer.add_object (new VariantObject () {
-	            name = i.to_string (),
-	            variant = builder.end ()
-	        });
-	    }
-        stdout.printf (serializer.to_string ());
+        serializer.add_object (new VariantObject () {
+            name = i.to_string (),
+            variant = builder.end ()
+        });
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    stdout.printf (serializer.to_string ());
 }
 
 public void variant_test_null_func () {
-    try {
-        var serializer = new Valentine.ObjectSerializer<VariantObject> ();
-	    for (int i = 0; i < 10; i++) {
-            VariantBuilder builder = new VariantBuilder (new VariantType ("a{sv}"));
-	        builder.add ("{sv}", "str1", new Variant.string ("str"));
-	        builder.add ("{sv}", "str2", new Variant.int16 (10));
-	        builder.add ("{sv}", "str4", new Variant.int32 (10));
-	        builder.add ("{sv}", "str5", new Variant.int64 (10));
+    var serializer = new Valentine.ObjectSerializer<VariantObject> ();
+    for (int i = 0; i < 10; i++) {
+        VariantBuilder builder = new VariantBuilder (new VariantType ("a{sv}"));
+        builder.add ("{sv}", "str1", new Variant.string ("str"));
+        builder.add ("{sv}", "str2", new Variant.int16 (10));
+        builder.add ("{sv}", "str4", new Variant.int32 (10));
+        builder.add ("{sv}", "str5", new Variant.int64 (10));
 
-	        serializer.add_object (new VariantObject () {
-	            name = i.to_string (),
-	            variant = builder.end ()
-	        });
+        serializer.add_object (new VariantObject () {
+            name = i.to_string (),
+            variant = builder.end ()
+        });
 
-	    }
-	    serializer.add_object (new VariantObject ());
-        stdout.printf (serializer.to_string ());
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    serializer.add_object (new VariantObject ());
+    stdout.printf (serializer.to_string ());
 }
 
 public class VariantObject : Object {

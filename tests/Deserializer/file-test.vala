@@ -12,19 +12,14 @@ public static int main (string[] args) {
 }
 
 public void file_test_func () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<FileObject> ();
-        FileObject[] array = deserializer.deserialize_from_string (CSV);
+    var deserializer = new Valentine.ObjectDeserializer<FileObject> ();
+    var array = deserializer.deserialize_from_string (CSV);
 
-        var serializer = new Valentine.ObjectSerializer<FileObject> ();
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
-        print ("Created Objects\n%s", serializer.to_string ());
+    var serializer = new Valentine.ObjectSerializer<FileObject> ();
+    foreach (var obj in array) {
+        serializer.add_object (obj);
     }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print ("Created Objects\n%s", serializer.to_string ());
 }
 
 public class FileObject : Object {

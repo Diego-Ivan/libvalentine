@@ -7,6 +7,7 @@ conf.set('API_VERSION', API_VERSION)
 
 sources = files([
   'AbstractWriter.vala',
+  'AbstractLine.vala',
   'enums.vala',
   'delegates.vala',
   'ObjectDeserializer.vala',
@@ -19,7 +20,7 @@ sources = files([
   'TypeParser.vala',
   ])
 
-libvalentine = library('libvalentine-' + API_VERSION,
+libvalentine = library('valentine-' + API_VERSION,
   sources,
   vala_header: 'libvalentine.h',
   vala_vapi: 'libvalentine-' + API_VERSION + '.vapi',
@@ -31,7 +32,7 @@ libvalentine = library('libvalentine-' + API_VERSION,
   install: true,
   install_dir: [
     true,
-    get_option('includedir') / 'libvalentine-' + API_VERSION / 'libvalentine',
+    get_option('includedir') / 'libvalentine-' + API_VERSION,
     vapidir,
     g_ir_compiler.found()
   ]

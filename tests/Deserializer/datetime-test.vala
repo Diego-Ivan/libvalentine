@@ -26,39 +26,29 @@ public static int main (string[] args) {
 }
 
 public void non_null_test () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<DateObject> ();
-        DateObject[] array = deserializer.deserialize_from_string (NON_NULL_CSV);
+    var deserializer = new Valentine.ObjectDeserializer<DateObject> ();
+    var array = deserializer.deserialize_from_string (NON_NULL_CSV);
 
-        var serializer = new Valentine.ObjectSerializer<DateObject> ();
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
+    var serializer = new Valentine.ObjectSerializer<DateObject> ();
+    foreach (var obj in array) {
+        serializer.add_object (obj);
+    }
 
-        print ("Received Objects: \n");
-        print (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print ("Received Objects: \n");
+    print (serializer.to_string ());
 }
 
 public void null_test () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<DateObject> ();
-        DateObject[] array = deserializer.deserialize_from_string (NULL_CSV);
+    var deserializer = new Valentine.ObjectDeserializer<DateObject> ();
+    var array = deserializer.deserialize_from_string (NULL_CSV);
 
-        var serializer = new Valentine.ObjectSerializer<DateObject> ();
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
+    var serializer = new Valentine.ObjectSerializer<DateObject> ();
+    foreach (var obj in array) {
+        serializer.add_object (obj);
+    }
 
-        print ("Received Objects: \n");
-        print (serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print ("Received Objects: \n");
+    print (serializer.to_string ());
 }
 
 public class DateObject : Object {

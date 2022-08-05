@@ -12,20 +12,15 @@ public static int main (string[] args) {
 }
 
 public void test_func () {
-    try {
-        var deserializer = new Valentine.ObjectDeserializer<ExampleClass> ();
-        ExampleClass[] array = deserializer.deserialize_from_string (csv);
+    var deserializer = new Valentine.ObjectDeserializer<ExampleClass> ();
+    var array = deserializer.deserialize_from_string (csv);
 
-        var serializer = new Valentine.ObjectSerializer<ExampleClass> ();
-        foreach (var obj in array) {
-            serializer.add_object (obj);
-        }
+    var serializer = new Valentine.ObjectSerializer<ExampleClass> ();
+    foreach (var obj in array) {
+        serializer.add_object (obj);
+    }
 
-        print ("Objects: \n%s", serializer.to_string ());
-    }
-    catch (Error e) {
-        critical (e.message);
-    }
+    print ("Objects: \n%s", serializer.to_string ());
 }
 
 public class ExampleClass : Object {
