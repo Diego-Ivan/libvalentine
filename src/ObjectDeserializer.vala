@@ -44,21 +44,21 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
     }
 
     construct {
-        parser_types.add (new DeserializableType (typeof (int), Deserializer.value_int_from_string));
-        parser_types.add (new DeserializableType (typeof (uint), Deserializer.value_uint_from_string));
-        parser_types.add (new DeserializableType (typeof (float), Deserializer.value_float_from_string));
-        parser_types.add (new DeserializableType (typeof (double), Deserializer.value_double_from_string));
-        parser_types.add (new DeserializableType (typeof (bool), Deserializer.value_boolean_from_string));
-        parser_types.add (new DeserializableType (typeof (string), Deserializer.value_string_from_string));
-        parser_types.add (new DeserializableType (typeof (string[]), Deserializer.value_string_array_from_string));
-        parser_types.add (new DeserializableType (typeof (long), Deserializer.value_long_from_string));
-        parser_types.add (new DeserializableType (typeof (ulong), Deserializer.value_ulong_from_string));
-        parser_types.add (new DeserializableType (typeof (uchar), Deserializer.value_uchar_from_string));
-        parser_types.add (new DeserializableType (typeof (char), Deserializer.value_char_from_string));
-        parser_types.add (new DeserializableType (typeof (unichar), Deserializer.value_unichar_from_string));
-        parser_types.add (new DeserializableType (typeof (Variant), Deserializer.value_variant_from_string));
-        parser_types.add (new DeserializableType (typeof (DateTime), Deserializer.value_datetime_from_string));
-        parser_types.add (new DeserializableType (typeof (File), Deserializer.value_file_from_string));
+        parser_types.add (new DeserializableType (typeof (int), value_int_from_string));
+        parser_types.add (new DeserializableType (typeof (uint), value_uint_from_string));
+        parser_types.add (new DeserializableType (typeof (float), value_float_from_string));
+        parser_types.add (new DeserializableType (typeof (double), value_double_from_string));
+        parser_types.add (new DeserializableType (typeof (bool), value_boolean_from_string));
+        parser_types.add (new DeserializableType (typeof (string), value_string_from_string));
+        parser_types.add (new DeserializableType (typeof (string[]), value_string_array_from_string));
+        parser_types.add (new DeserializableType (typeof (long), value_long_from_string));
+        parser_types.add (new DeserializableType (typeof (ulong), value_ulong_from_string));
+        parser_types.add (new DeserializableType (typeof (uchar), value_uchar_from_string));
+        parser_types.add (new DeserializableType (typeof (char), value_char_from_string));
+        parser_types.add (new DeserializableType (typeof (unichar), value_unichar_from_string));
+        parser_types.add (new DeserializableType (typeof (Variant), value_variant_from_string));
+        parser_types.add (new DeserializableType (typeof (DateTime), value_datetime_from_string));
+        parser_types.add (new DeserializableType (typeof (File), value_file_from_string));
     }
 
     /**

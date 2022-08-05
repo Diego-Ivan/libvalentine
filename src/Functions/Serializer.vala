@@ -1,4 +1,4 @@
-/* Parser.vala
+/* Serializer.vala
  *
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-namespace Valentine.Parser {
+namespace Valentine {
     internal inline string value_string_to_string (Value val) {
         string str = (string) val;
         if (str == null) {

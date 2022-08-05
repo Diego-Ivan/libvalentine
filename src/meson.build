@@ -6,18 +6,26 @@ conf.set('PROJECT_VERSION', meson.project_version ())
 conf.set('API_VERSION', API_VERSION)
 
 sources = files([
-  'AbstractWriter.vala',
-  'AbstractLine.vala',
+  # Abstract Classes
+  'Abstract/AbstractWriter.vala',
+  'Abstract/AbstractLine.vala',
+
+  # Functions and Delegates
+  'Functions/delegates.vala',
+  'Functions/Deserializer.vala',
+  'Functions/Serializer.vala',
+
+  # Interfaces
+  'Interfaces/TypeParser.vala',
+
+  # Classes for internal use
+  'Internal/DeserializerLine.vala',
+  'Internal/SerializerLine.vala',
+  'Internal/Types.vala',
+
   'enums.vala',
-  'delegates.vala',
   'ObjectDeserializer.vala',
   'ObjectSerializer.vala',
-  'SerializerLine.vala',
-  'Deserializer.vala',
-  'DeserializerLine.vala',
-  'Parser.vala',
-  'structs.vala',
-  'TypeParser.vala',
   ])
 
 libvalentine = library('valentine-' + API_VERSION,

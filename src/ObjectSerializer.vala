@@ -53,20 +53,20 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
     }
 
     construct {
-        parser_types.add (new SerializableType (typeof (string), Parser.value_string_to_string));
-        parser_types.add (new SerializableType (typeof (int), Parser.value_int_to_string));
-        parser_types.add (new SerializableType (typeof (uint), Parser.value_uint_to_string));
-        parser_types.add (new SerializableType (typeof (float), Parser.value_float_to_string));
-        parser_types.add (new SerializableType (typeof (double), Parser.value_double_to_string));
-        parser_types.add (new SerializableType (typeof (long), Parser.value_long_to_string));
-        parser_types.add (new SerializableType (typeof (ulong), Parser.value_ulong_to_string));
-        parser_types.add (new SerializableType (typeof (bool), Parser.value_boolean_to_string));
-        parser_types.add (new SerializableType (typeof (char), Parser.value_char_to_string));
-        parser_types.add (new SerializableType (typeof (uchar), Parser.value_uchar_to_string));
-        parser_types.add (new SerializableType (typeof (string[]), Parser.value_string_array_to_string));
-        parser_types.add (new SerializableType (typeof (Variant), Parser.value_variant_to_string));
-        parser_types.add (new SerializableType (typeof (File), Parser.value_file_to_string));
-        parser_types.add (new SerializableType (typeof (DateTime), Parser.value_datetime_to_string));
+        parser_types.add (new SerializableType (typeof (string), value_string_to_string));
+        parser_types.add (new SerializableType (typeof (int), value_int_to_string));
+        parser_types.add (new SerializableType (typeof (uint), value_uint_to_string));
+        parser_types.add (new SerializableType (typeof (float), value_float_to_string));
+        parser_types.add (new SerializableType (typeof (double), value_double_to_string));
+        parser_types.add (new SerializableType (typeof (long), value_long_to_string));
+        parser_types.add (new SerializableType (typeof (ulong), value_ulong_to_string));
+        parser_types.add (new SerializableType (typeof (bool), value_boolean_to_string));
+        parser_types.add (new SerializableType (typeof (char), value_char_to_string));
+        parser_types.add (new SerializableType (typeof (uchar), value_uchar_to_string));
+        parser_types.add (new SerializableType (typeof (string[]), value_string_array_to_string));
+        parser_types.add (new SerializableType (typeof (Variant), value_variant_to_string));
+        parser_types.add (new SerializableType (typeof (File), value_file_to_string));
+        parser_types.add (new SerializableType (typeof (DateTime), value_datetime_to_string));
     }
 
     /**
