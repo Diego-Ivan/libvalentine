@@ -32,7 +32,7 @@ libvalentine = library('valentine-' + API_VERSION,
   install: true,
   install_dir: [
     true,
-    get_option('includedir'),
+    get_option('includedir') / 'libvalentine-' + API_VERSION / 'libvalentine',
     vapidir,
     g_ir_compiler.found()
   ]
