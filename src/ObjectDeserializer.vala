@@ -44,6 +44,10 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         }
     }
 
+    static construct {
+        init ();
+    }
+
     construct {
         parser_types.add (new DeserializableType (typeof (int), value_int_from_string));
         parser_types.add (new DeserializableType (typeof (uint), value_uint_from_string));

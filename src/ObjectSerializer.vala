@@ -51,6 +51,10 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
         }
     }
 
+    static construct {
+        init ();
+    }
+
     construct {
         parser_types.add (new SerializableType (typeof (string), value_string_to_string));
         parser_types.add (new SerializableType (typeof (int), value_int_to_string));

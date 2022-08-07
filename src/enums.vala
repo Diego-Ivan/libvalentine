@@ -67,8 +67,8 @@ namespace Valentine {
 
         internal inline string get_separator () {
             switch (this) {
-                // case PREFER_LOCALE:
-                //     return _(",");
+                case PREFER_LOCALE:
+                    return dgettext (GETTEXT_PACKAGE, ",");
 
                 case USE_DOTS:
                     return ".";
