@@ -31,6 +31,16 @@ namespace Valentine {
     [Version (since="0.1")]
     public delegate string TypeSerializationFunc (Value val);
 
+    /**
+     * TypeDeserializationFunc allows to convert a cell from a CSV string to a {@link GLib.Value}
+     *
+     * This function takes a string and is expected to be converted to {@link GLib.Value} that {@link ObjectDeserializer}
+     * can use to set an object property with some type.
+     *
+     * @param str The CSV cell that has to be deserialized. Note that this string is no longer quoted. It may
+     * contain quotes if they were inside the string extracted from a CSV file or string.
+     * @return A {@link GLib.Value}
+     */
     [Version (since="0.2")]
     public delegate Value TypeDeserializationFunc (string str);
 }

@@ -35,8 +35,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
     /**
      * Constructs a new {@link ObjectSerializer} with the Type given
      *
-     * For this implementation, the type must be a {@link GLib.Object} or a derivate. Otherwise, it will
-     * throw an Error
+     * For this implementation, the type must be a {@link GLib.Object} or a derivate.
      */
     public ObjectSerializer () requires (typeof(T).is_object ()) {
         Type obj_type = typeof (T);
@@ -44,7 +43,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
         ObjectClass klass = (ObjectClass) obj_type.class_ref ();
         foreach (ParamSpec spec in klass.list_properties ()) {
             if (READABLE in spec.flags) {
-                properties.add (new Valentine.Property () {
+                properties.add (new Property () {
                     name = spec.name,
                     type = spec.value_type,
                 });
@@ -79,6 +78,9 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
         object_list.append ((Object) obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     [Version (since="0.2.5")]
     public override string to_string () requires (typeof(T).is_object ()) {
         string separator = separator_mode.get_separator ();
@@ -127,7 +129,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
      * Adds a parser function for types that aren't processed by default
      *
      * This function allows the user to add parse unsupported types like structs, classes or objects
-     * that are properties.
+     * that are registered as properties.
      *
      * @param type The type that will be processed
      * @param func The function that processes the type

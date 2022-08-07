@@ -18,6 +18,9 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
+/**
+ * An abstract class internally used for {@link TypeParser} implementations.
+ */
 public abstract class Valentine.AbstractLine<G> {
     public virtual G result { get; protected set; }
     public int position { get; protected set; }

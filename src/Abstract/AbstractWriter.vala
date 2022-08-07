@@ -18,8 +18,20 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
+/**
+ * An abstract class for objects that can write a CSV string or file.
+ *
+ * Currently, the only implementation is {@link ObjectSerializer}
+ */
 public abstract class Valentine.AbstractWriter : Object {
+    /**
+     * The {@link WriteMode} that the implementation should use to write the CSV file
+     */
     public virtual Valentine.WriteMode write_mode { get; set; default = ALL_QUOTED; }
+
+    /**
+     * The separator that the implementation should use to write the CSV file.
+     */
     public virtual Valentine.SeparatorMode separator_mode { get; set; }
 
     /**

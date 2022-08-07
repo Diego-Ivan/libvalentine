@@ -18,6 +18,9 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
+/**
+ * An interface used for objects that can parse values.
+ */
 [Version (since="0.2")]
 public interface Valentine.TypeParser : Object {
     internal abstract Gee.LinkedList<Property?> properties { get; set; default = new Gee.LinkedList<Property?> (); }
@@ -35,6 +38,12 @@ public interface Valentine.TypeParser : Object {
         return parsable_types;
     }
 
+    /**
+     * Whether the type given has a parser available.
+     *
+     * @param type The type that will be looked for.
+     * @return Whether it is supported or not.
+     */
     public virtual bool supports_type (Type type) {
         foreach (ParserType t in parser_types) {
             if (t.type == type) {
