@@ -2,25 +2,48 @@ conf = configuration_data()
 conf.set('prefix', get_option('prefix'))
 conf.set('libdir', get_option ('libdir'))
 conf.set('PROJECT_NAME', 'libvalentine')
+conf.set ('GETTEXT_PACKAGE', meson.project_name ())
+conf.set ('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 conf.set('PROJECT_VERSION', meson.project_version ())
 conf.set('API_VERSION', API_VERSION)
 
+vala_conf = configure_file (
+  input: 'config.vala.in',
+  output: '@BASENAME@',
+  configuration: conf
+)
+
+add_project_arguments(
+    '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
+    language: ['c']
+)
+
 sources = files([
-  'AbstractWriter.vala',
-  'AbstractLine.vala',
+  # Abstract Classes
+  'Abstract/AbstractWriter.vala',
+  'Abstract/AbstractLine.vala',
+
+  # Functions and Delegates
+  'Functions/delegates.vala',
+  'Functions/Deserializer.vala',
+  'Functions/Serializer.vala',
+
+  # Interfaces
+  'Interfaces/TypeParser.vala',
+
+  # Classes for internal use
+  'Internal/DeserializerLine.vala',
+  'Internal/SerializerLine.vala',
+  'Internal/Types.vala',
+
   'enums.vala',
-  'delegates.vala',
   'ObjectDeserializer.vala',
   'ObjectSerializer.vala',
-  'SerializerLine.vala',
-  'Deserializer.vala',
-  'DeserializerLine.vala',
-  'Parser.vala',
-  'structs.vala',
-  'TypeParser.vala',
+  'Init.vala',
   ])
 
 libvalentine = library('valentine-' + API_VERSION,
+  vala_conf,
   sources,
   vala_header: 'libvalentine.h',
   vala_vapi: 'libvalentine-' + API_VERSION + '.vapi',
@@ -69,7 +92,7 @@ pkgconfig.generate(libvalentine,
 if get_option('enable_valadoc')
   valadoc = find_program('valadoc')
   libvalentine_docs = custom_target('libvalentine_apidocs',
-    input: sources,
+    input: [sources, vala_conf],
     install: true,
     # FIXME: Installing to tmp, so the target will be built
     #        the problem is we cannot access a subfolder of the

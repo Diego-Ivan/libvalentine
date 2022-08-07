@@ -1,5 +1,4 @@
-/* AbstractLine.vala
- *
+/*
  * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
  *
  * This file is free software; you can redistribute it and/or modify it
@@ -18,7 +17,7 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-public abstract class Valentine.AbstractLine<G> {
-    public virtual G result { get; protected set; }
-    public int position { get; protected set; }
+namespace Valentine {
+    private const string GETTEXT_PACKAGE = "@GETTEXT_PACKAGE@";
+    private const string LOCALEDIR = "@LOCALEDIR@";
 }

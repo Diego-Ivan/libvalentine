@@ -36,7 +36,7 @@ namespace Valentine {
          */
         ONLY_REQUIRED_QUOTES;
 
-        public inline string parse_string (string str, string separator) {
+        internal inline string parse_string (string str, string separator) {
             switch (this) {
                 case ONLY_REQUIRED_QUOTES:
                     string s = str.replace ("\"", "\"\"");
@@ -56,6 +56,9 @@ namespace Valentine {
         }
     }
 
+    /**
+     * The separator that {@link AbstractWriter} implementations should use
+     */
     [Version(since="0.1")]
     public enum SeparatorMode {
         PREFER_LOCALE,
@@ -64,8 +67,8 @@ namespace Valentine {
 
         internal inline string get_separator () {
             switch (this) {
-                // case PREFER_LOCALE:
-                //     return _(",");
+                case PREFER_LOCALE:
+                    return dgettext (GETTEXT_PACKAGE, ",");
 
                 case USE_DOTS:
                     return ".";
@@ -76,22 +79,5 @@ namespace Valentine {
                     return ",";
             }
         }
-    }
-
-    /**
-     * Thrown by {@link Valentine.ObjectSerializer}
-     */
-    [Version(since="0.1")]
-    public errordomain ObjectWriterError {
-        /**
-         * Indicates that the {@link GLib.Type} given to {@link Valentine.ObjectSerializer} is not an Object
-         */
-        NOT_OBJECT
-    }
-
-    [Version(since="0.2")]
-    public errordomain DeserializerError {
-        FILE_NOT_EXISTS,
-        FILE_NOT_CSV
     }
 }

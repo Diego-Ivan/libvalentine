@@ -22,7 +22,8 @@
  * A class that deserializes objects from a CSV file given.
  *
  * This class receives the path of the CSV file and returns an array of Objects with the properties
- * defined in the CSV file
+ * defined in the CSV file. It is recommended that this object is used to parse CSV strings or files generated
+ * by {@link ObjectSerializer}
  */
 [Version (since="0.2", experimental=true, experimental_until="0.3")]
 public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypeParser {
@@ -43,22 +44,26 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         }
     }
 
+    static construct {
+        init ();
+    }
+
     construct {
-        parser_types.add (new DeserializableType (typeof (int), Deserializer.value_int_from_string));
-        parser_types.add (new DeserializableType (typeof (uint), Deserializer.value_uint_from_string));
-        parser_types.add (new DeserializableType (typeof (float), Deserializer.value_float_from_string));
-        parser_types.add (new DeserializableType (typeof (double), Deserializer.value_double_from_string));
-        parser_types.add (new DeserializableType (typeof (bool), Deserializer.value_boolean_from_string));
-        parser_types.add (new DeserializableType (typeof (string), Deserializer.value_string_from_string));
-        parser_types.add (new DeserializableType (typeof (string[]), Deserializer.value_string_array_from_string));
-        parser_types.add (new DeserializableType (typeof (long), Deserializer.value_long_from_string));
-        parser_types.add (new DeserializableType (typeof (ulong), Deserializer.value_ulong_from_string));
-        parser_types.add (new DeserializableType (typeof (uchar), Deserializer.value_uchar_from_string));
-        parser_types.add (new DeserializableType (typeof (char), Deserializer.value_char_from_string));
-        parser_types.add (new DeserializableType (typeof (unichar), Deserializer.value_unichar_from_string));
-        parser_types.add (new DeserializableType (typeof (Variant), Deserializer.value_variant_from_string));
-        parser_types.add (new DeserializableType (typeof (DateTime), Deserializer.value_datetime_from_string));
-        parser_types.add (new DeserializableType (typeof (File), Deserializer.value_file_from_string));
+        parser_types.add (new DeserializableType (typeof (int), value_int_from_string));
+        parser_types.add (new DeserializableType (typeof (uint), value_uint_from_string));
+        parser_types.add (new DeserializableType (typeof (float), value_float_from_string));
+        parser_types.add (new DeserializableType (typeof (double), value_double_from_string));
+        parser_types.add (new DeserializableType (typeof (bool), value_boolean_from_string));
+        parser_types.add (new DeserializableType (typeof (string), value_string_from_string));
+        parser_types.add (new DeserializableType (typeof (string[]), value_string_array_from_string));
+        parser_types.add (new DeserializableType (typeof (long), value_long_from_string));
+        parser_types.add (new DeserializableType (typeof (ulong), value_ulong_from_string));
+        parser_types.add (new DeserializableType (typeof (uchar), value_uchar_from_string));
+        parser_types.add (new DeserializableType (typeof (char), value_char_from_string));
+        parser_types.add (new DeserializableType (typeof (unichar), value_unichar_from_string));
+        parser_types.add (new DeserializableType (typeof (Variant), value_variant_from_string));
+        parser_types.add (new DeserializableType (typeof (DateTime), value_datetime_from_string));
+        parser_types.add (new DeserializableType (typeof (File), value_file_from_string));
     }
 
     /**
@@ -67,7 +72,7 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
      * This method parses the file and creates objects with the properties defined in the CSV file.
      *
      * @param path The path to the CSV file
-     * @return An array of objects
+     * @return A list of objects
      */
     public List<T> deserialize_from_file (string path) requires (typeof(T).is_object ()) {
         File file = File.new_for_path (path);
@@ -125,6 +130,12 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         }
     }
 
+    /**
+     * This method deserializes a valid CSV formatted string and returns a List of objects of the given type
+     *
+     * @param str The CSV string to parse
+     * @return A list of objects of the given type
+     */
     public List<T> deserialize_from_string (string str) requires (typeof(T).is_object ()) {
         var list = new List<T> ();
 
@@ -149,7 +160,6 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
                 thread_pool.add (deserializer_lines[i]);
             }
 
-            // TODO: I feel that having this while loop is quite hacky. I would prefer to have an alternative
             while (queue.length () != length);
 
             for (int i = 0; i < length; i++) {
@@ -163,10 +173,18 @@ public sealed class Valentine.ObjectDeserializer<T> : Object, Valentine.TypePars
         return list;
     }
 
+    /**
+     * Adds a parser function for types that aren't processed by default
+     *
+     * This function allows the user to add parse unsupported types like structs, classes or objects
+     * that are registered as properties.
+     *
+     * @param type The type that will be processed
+     * @param func The function that processes the type
+     */
     public void add_custom_parser_for_type (Type type, owned TypeDeserializationFunc func) requires (typeof(T).is_object ()) {
         parser_types.add (new DeserializableType (type, (owned) func));
     }
-
     private int object_sort_func (DeserializerLine line_a, DeserializerLine line_b) {
         return line_a.position - line_b.position;
     }

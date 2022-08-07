@@ -71,13 +71,13 @@ internal sealed class Valentine.DeserializerLine<T> : Valentine.AbstractLine<Obj
                     }
 
                     if (property.type.is_enum ()) {
-                        Value val = Deserializer.value_enum_from_string (cells[i], property.type);
+                        Value val = value_enum_from_string (cells[i], property.type);
                         obj.set_property (property.name, val);
                         break;
                     }
 
                     if (property.type.is_flags ()) {
-                        Value val = Deserializer.value_flags_from_string (cells[i], property.type);
+                        Value val = value_flags_from_string (cells[i], property.type);
                         obj.set_property (property.name, val);
                         break;
                     }

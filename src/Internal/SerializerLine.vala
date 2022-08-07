@@ -60,7 +60,7 @@ internal sealed class Valentine.SerializerLine : Valentine.AbstractLine<string> 
 
             if (!found) {
                 if (val.type ().is_flags ()) {
-                    s = Parser.value_flags_to_string (val);
+                    s = value_flags_to_string (val);
                     string str = write_mode.parse_string (s, separator);
                     if (serializable_properties.size - 1 == i) {
                         str += "\n";
@@ -74,7 +74,7 @@ internal sealed class Valentine.SerializerLine : Valentine.AbstractLine<string> 
                 }
 
                 if (val.type ().is_enum ()) {
-                    s = Parser.value_enum_to_string (val);
+                    s = value_enum_to_string (val);
                     string str = write_mode.parse_string (s, separator);
                     if (serializable_properties.size - 1 == i) {
                         str += "\n";

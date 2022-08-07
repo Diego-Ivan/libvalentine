@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-namespace Valentine.Deserializer {
+namespace Valentine {
     internal inline Value value_int_from_string (string str) {
         Value val = Value (typeof(int));
         int result;
