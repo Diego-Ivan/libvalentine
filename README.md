@@ -10,9 +10,6 @@ public class Example : Object {
     // This property is private read, therefore it won't appear in the CSV file
     public bool boolean { private get; set; default = false; }
 }
-Example[] examples = {
-        new Example (), new Example () { name = "hola" }, new Example () { something = 2 }
-};
 
 var serializer = new Valentine.ObjectSerializer<Example> ();
 example.add_object (new Example ());
@@ -85,7 +82,6 @@ Support for property types:
 - [x] Booleans
 - [x] Strings
 - [x] Chars
-- [ ] Objects (Maybe also an option to not parse objects?)
 - [x] UChars
 - [x] Longs
 - [X] DateTimes
