@@ -1,6 +1,6 @@
 /* SerializerLine.vala
  *
- * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
+ * Copyright 2022-2023 Diego Iván <diegoivan.mae@gmail.com>
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -31,62 +31,33 @@ internal sealed class Valentine.SerializerLine : Valentine.AbstractLine<string> 
         position = pos;
     }
 
-    public void serialize (Gee.ArrayList<Property?> serializable_properties, Gee.LinkedList<SerializableType> serializable_types) {
-        for (int i = 0; i < serializable_properties.size; i++) {
-            Property property = serializable_properties.get (i);
-            Value val = Value (property.type);
+    public void serialize (GenericSet<Property> properties, HashTable<Type, SerializableType> serializable_types) {
+        for (List<unowned Property>? list = properties.get_values (); list != null; list = list.next) {
+            unowned Property property = list.data;
+            var @value = Value (property.type);
 
-            object.get_property (property.name, ref val);
+            object.get_property (property.name, ref @value);
 
-            bool found = false;
-            string s = "";
-            foreach (SerializableType type in serializable_types) {
-                if (type.type == property.type) {
-                    s = type.func (val);
-                    found = true;
+            SerializableType? type = serializable_types[property.type];
+            unowned TypeSerializationFunc? serialization_func = null;
 
-                    string str = write_mode.parse_string (s, separator);
-                    if (serializable_properties.size - 1 == i) {
-                        str += "\n";
-                    }
-                    else {
-                        str += "%s".printf (separator);
-                    }
-
-                    result += str;
-                    break;
-                }
+            if (type == null) {
+                serialization_func = get_default_func (property.type);
+            }
+            else {
+                serialization_func = type.func;
             }
 
-            if (!found) {
-                if (val.type ().is_flags ()) {
-                    s = value_flags_to_string (val);
-                    string str = write_mode.parse_string (s, separator);
-                    if (serializable_properties.size - 1 == i) {
-                        str += "\n";
-                    }
-                    else {
-                        str += "%s".printf (separator);
-                    }
-
-                    result += str;
-                    continue;
-                }
-
-                if (val.type ().is_enum ()) {
-                    s = value_enum_to_string (val);
-                    string str = write_mode.parse_string (s, separator);
-                    if (serializable_properties.size - 1 == i) {
-                        str += "\n";
-                    }
-                    else {
-                        str += "%s".printf (separator);
-                    }
-
-                    result += str;
-                    continue;
-                }
-            }
+            result = write_mode.parse_string (serialization_func (value), separator);
+            // Write separator if it's not the last property.
+            result += "%s".printf (list.next == null ? "\n" : separator);
         }
+    }
+
+    public unowned TypeSerializationFunc get_default_func (Type type) {
+        if (type.is_enum ()) {
+            return value_enum_to_string;
+        }
+        return value_flags_to_string;
     }
 }

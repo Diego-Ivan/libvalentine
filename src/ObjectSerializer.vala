@@ -1,6 +1,6 @@
 /* ObjectSerializer.vala
  *
- * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
+ * Copyright 2022-2023 Diego Iván <diegoivan.mae@gmail.com>
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -29,8 +29,8 @@
 public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Valentine.TypeParser {
     private List<Object> object_list = new List<Object> ();
 
-    internal Gee.LinkedList<Property?> properties { get; set; default = new Gee.LinkedList<Property?> (); }
-    internal Gee.LinkedList<ParserType> parser_types { get; set; default = new Gee.LinkedList<SerializableType> (); }
+    internal GenericSet<Property> properties { get; set; default = new GenericSet<Property> (direct_hash, direct_equal); }
+    internal HashTable<Type, ParserType> parser_types { get; set; default = new HashTable<Type, ParserType> (int_hash, int_equal); }
 
     /**
      * Constructs a new {@link ObjectSerializer} with the Type given
@@ -40,7 +40,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
     public ObjectSerializer () requires (typeof(T).is_object ()) {
         Type obj_type = typeof (T);
 
-        ObjectClass klass = (ObjectClass) obj_type.class_ref ();
+        var klass = (ObjectClass) obj_type.class_ref ();
         foreach (ParamSpec spec in klass.list_properties ()) {
             if (READABLE in spec.flags) {
                 properties.add (new Property () {
@@ -56,20 +56,20 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
     }
 
     construct {
-        parser_types.add (new SerializableType (typeof (string), value_string_to_string));
-        parser_types.add (new SerializableType (typeof (int), value_int_to_string));
-        parser_types.add (new SerializableType (typeof (uint), value_uint_to_string));
-        parser_types.add (new SerializableType (typeof (float), value_float_to_string));
-        parser_types.add (new SerializableType (typeof (double), value_double_to_string));
-        parser_types.add (new SerializableType (typeof (long), value_long_to_string));
-        parser_types.add (new SerializableType (typeof (ulong), value_ulong_to_string));
-        parser_types.add (new SerializableType (typeof (bool), value_boolean_to_string));
-        parser_types.add (new SerializableType (typeof (char), value_char_to_string));
-        parser_types.add (new SerializableType (typeof (uchar), value_uchar_to_string));
-        parser_types.add (new SerializableType (typeof (string[]), value_string_array_to_string));
-        parser_types.add (new SerializableType (typeof (Variant), value_variant_to_string));
-        parser_types.add (new SerializableType (typeof (File), value_file_to_string));
-        parser_types.add (new SerializableType (typeof (DateTime), value_datetime_to_string));
+        parser_types[typeof(string)] = new SerializableType (value_string_to_string);
+        parser_types[typeof(int)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(uint)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(float)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(double)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(long)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(ulong)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(bool)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(char)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(uchar)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(string[])] = new SerializableType (value_int_to_string);
+        parser_types[typeof(Variant)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(File)] = new SerializableType (value_int_to_string);
+        parser_types[typeof(DateTime)] = new SerializableType (value_int_to_string);
     }
 
     /**
@@ -89,18 +89,17 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
     public override string to_string () requires (typeof(T).is_object ()) {
         string separator = separator_mode.get_separator ();
         string output = "";
+        remove_unparsable_properties ();
 
-        Gee.ArrayList<Property?> parsable_properties = get_parsable_properties ();
-
-        // First, the column titles will be written with the property names that were obtained
-        for (int i = 0; i < parsable_properties.size; i++) {
-            // Here we check if it is the last one of the array to stop writing separators, and instead
-            // use a line break
-            if (i == parsable_properties.size - 1) {
-                output += "%s\n".printf (parsable_properties.get (i).name);
+        for (List<unowned Property>? list = properties.get_values (); list != null; list = list.next) {
+            // Here we check if it is the lat one of the list, so we stop writing separators.
+            // list.data is a Valentine.Property
+            if (list.next == null) {
+                output += "%s\n".printf (list.data.name);
                 continue;
             }
-            output += "%s%s".printf (parsable_properties.get (i).name, separator);
+
+            output += "%s%s".printf (list.data.name, separator);
         }
 
         try {
@@ -108,17 +107,19 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
             var communication = new AsyncQueue<SerializerLine> ();
 
             var processsing_thread_pool = new ThreadPool<SerializerLine>.with_owned_data ((serializer_line) => {
-                serializer_line.serialize (parsable_properties, (Gee.LinkedList<SerializableType>) parser_types);
+                serializer_line.serialize (properties, (HashTable<Type, SerializableType>) parser_types);
                 communication.push_sorted (serializer_line, lines_sort_func);
             }, 8, false);
 
-            for (int i = 0; i < length; i++) {
-                processsing_thread_pool.add (new SerializerLine (object_list.nth_data (i), separator, write_mode, i));
+            int i = 0;
+            foreach (var object in object_list) {
+                processsing_thread_pool.add (new SerializerLine (object, separator, write_mode, i));
+                i++;
             }
 
             while (communication.length () != length);
 
-            for (int i = 0; i < length; i++) {
+            for (int j = 0; j < length; j++) {
                 output += communication.pop ().result;
             }
         }
@@ -140,7 +141,7 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
      */
     [Version (since="0.2.5")]
     public void add_custom_parser_for_type (Type type, owned TypeSerializationFunc func) requires (typeof(T).is_object ()) {
-        parser_types.add (new SerializableType (type, (owned) func));
+        parser_types[type] = new SerializableType ((owned) func);
     }
 
     private int lines_sort_func (SerializerLine a, SerializerLine b) {
