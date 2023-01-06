@@ -1,6 +1,6 @@
 /* TypeParser.vala
  *
- * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
+ * Copyright 2022-2023 Diego Iván <diegoivan.mae@gmail.com>
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -23,19 +23,15 @@
  */
 [Version (since="0.2")]
 public interface Valentine.TypeParser : Object {
-    internal abstract Gee.LinkedList<Property?> properties { get; set; default = new Gee.LinkedList<Property?> (); }
-    internal abstract Gee.LinkedList<ParserType> parser_types { get; set; default = new Gee.LinkedList<ParserType> (); }
+    internal abstract HashTable<string, Property> properties { get; set; }
+    internal abstract HashTable<Type, ParserType> parser_types { get; set; }
 
-    internal virtual Gee.ArrayList<Property?> get_parsable_properties () {
-        var parsable_types = new Gee.ArrayList<Property?> ();
-        foreach (Property property in properties) {
-            if (supports_type (property.type)) {
-                parsable_types.add (property);
-                continue;
+    internal virtual void remove_unparsable_properties () {
+        foreach (unowned string name in properties.get_keys ()) {
+            if (!supports_type (properties[name].type)) {
+                properties.remove (name);
             }
         }
-
-        return parsable_types;
     }
 
     /**
@@ -45,11 +41,6 @@ public interface Valentine.TypeParser : Object {
      * @return Whether it is supported or not.
      */
     public virtual bool supports_type (Type type) {
-        foreach (ParserType t in parser_types) {
-            if (t.type == type) {
-                return true;
-            }
-        }
-        return type.is_enum () || type.is_flags ();
+        return type in parser_types || type.is_enum () || type.is_flags ();
     }
 }
