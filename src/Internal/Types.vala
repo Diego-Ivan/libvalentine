@@ -1,6 +1,6 @@
 /* structs.vala
  *
- * Copyright 2022 Diego Iván <diegoivan.mae@gmail.com>
+ * Copyright 2022-2023 Diego Iván <diegoivan.mae@gmail.com>
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -25,21 +25,18 @@ namespace Valentine {
     }
 
     private abstract class ParserType {
-        public Type type;
     }
 
     private class SerializableType : ParserType {
         public TypeSerializationFunc func;
-        public SerializableType (Type t, owned TypeSerializationFunc f) {
-            type = t;
+        public SerializableType (owned TypeSerializationFunc f) {
             func = (owned) f;
         }
     }
 
     private class DeserializableType : ParserType {
         public TypeDeserializationFunc func;
-        public DeserializableType (Type t, owned TypeDeserializationFunc f) {
-            type = t;
+        public DeserializableType (owned TypeDeserializationFunc f) {
             func = (owned) f;
         }
     }
