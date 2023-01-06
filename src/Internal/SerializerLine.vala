@@ -31,7 +31,7 @@ internal sealed class Valentine.SerializerLine : Valentine.AbstractLine<string> 
         position = pos;
     }
 
-    public void serialize (GenericSet<Property> properties, HashTable<Type, SerializableType> serializable_types) {
+    public void serialize (HashTable<string, Property> properties, HashTable<Type, SerializableType> serializable_types) {
         for (List<unowned Property>? list = properties.get_values (); list != null; list = list.next) {
             unowned Property property = list.data;
             var @value = Value (property.type);

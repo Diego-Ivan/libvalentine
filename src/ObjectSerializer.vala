@@ -29,7 +29,7 @@
 public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Valentine.TypeParser {
     private List<Object> object_list = new List<Object> ();
 
-    internal GenericSet<Property> properties { get; set; default = new GenericSet<Property> (direct_hash, direct_equal); }
+    internal HashTable<string, Property> properties { get; set; default = new HashTable<string, Property> (str_hash, str_equal); }
     internal HashTable<Type, ParserType> parser_types { get; set; default = new HashTable<Type, ParserType> (int_hash, int_equal); }
 
     /**
@@ -43,10 +43,10 @@ public sealed class Valentine.ObjectSerializer<T> : Valentine.AbstractWriter, Va
         var klass = (ObjectClass) obj_type.class_ref ();
         foreach (ParamSpec spec in klass.list_properties ()) {
             if (READABLE in spec.flags) {
-                properties.add (new Property () {
+                properties[spec.name] = new Property () {
                     name = spec.name,
-                    type = spec.value_type,
-                });
+                    type = spec.value_type
+                };
             }
         }
     }

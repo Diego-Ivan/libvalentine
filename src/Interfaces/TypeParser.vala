@@ -23,13 +23,13 @@
  */
 [Version (since="0.2")]
 public interface Valentine.TypeParser : Object {
-    internal abstract GenericSet<Property> properties { get; set; }
+    internal abstract HashTable<string, Property> properties { get; set; }
     internal abstract HashTable<Type, ParserType> parser_types { get; set; }
 
     internal virtual void remove_unparsable_properties () {
-        foreach (unowned Property property in properties.get_values ()) {
-            if (supports_type (property.type)) {
-                properties.remove (property);
+        foreach (unowned string name in properties.get_keys ()) {
+            if (!supports_type (properties[name].type)) {
+                properties.remove (name);
             }
         }
     }
